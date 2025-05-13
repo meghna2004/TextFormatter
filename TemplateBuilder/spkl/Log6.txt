@@ -1,0 +1,25 @@
+17:39:48	
+17:39:48	Exiting program with exception: Parameter count mismatch.
+17:43:47	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+17:43:47	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'
+17:43:48		Begin Reading Metadata from Server
+17:46:56	
+17:46:56	CrmSvcUtil Error: 2 : Source	: mscorlib
+17:46:56	Method	: InvokeArgumentsCheck
+17:46:56	Date	: 17:46:56
+17:46:56	Time	: 04/03/2025
+17:46:56	Error	: Parameter count mismatch.
+17:46:56	Stack Trace	: at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:46:56	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:46:56	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:46:56	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:46:56	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:46:56	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:46:56	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+17:46:56	======================================================================================================================
+17:46:56	
+17:49:43	
+17:49:43	Exiting program with exception: Parameter count mismatch.
+17:50:58	
+17:50:58	Exiting program with exception: Parameter count mismatch.
+13:00:12	

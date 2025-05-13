@@ -1,0 +1,47 @@
+17:43:47	c 2022 Microsoft Corporation. All rights reserved
+17:43:47	
+17:43:47	Begin Reading Metadata from MetadataProviderService
+17:46:51	c 2022 Microsoft Corporation. All rights reserved
+17:46:51	
+17:46:51	Begin Reading Metadata from MetadataProviderService
+17:46:51	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'
+17:46:52		Begin Reading Metadata from Server
+17:50:58		Read 392 Global OptionSets
+17:50:58		Read 1 SDK Messages
+17:50:58		Completed Reading Metadata from Server - 00:00:04.7858891
+17:50:58	Completed Reading Metadata from MetadataProviderService - 00:00:06.2946923
+17:50:58	Begin Writing Code File
+17:50:58	CrmSvcUtil Error: 2 : Exiting program with exit code 2 due to exception : System.Reflection.TargetParameterCountException: Parameter count mismatch.
+17:50:58	   at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:50:58	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:50:58	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:50:58	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:50:58	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:50:58	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:50:58	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+17:50:58	CrmSvcUtil Error: 2 : ===== DETAIL ======
+17:50:58	CrmSvcUtil Error: 2 : Source	: mscorlib
+17:50:58	Method	: InvokeArgumentsCheck
+17:50:58	Date	: 17:50:58
+17:50:58	Time	: 04/03/2025
+17:50:58	Error	: Parameter count mismatch.
+17:50:58	Stack Trace	: at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:50:58	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:50:58	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:50:58	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:50:58	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:50:58	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:50:58	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+13:00:05	c 2022 Microsoft Corporation. All rights reserved
+13:00:05	
+13:00:05	Begin Reading Metadata from MetadataProviderService
+13:00:05	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'
+13:00:07		Begin Reading Metadata from Server
+14:30:26	c 2020 Microsoft Corporation. All rights reserved
+14:30:26	
+14:30:26	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.79\content\bin\coretools\spkl.crmsvcutil.config'
+14:30:34	Code written to C:\Vigence\Projects\Vig Internal\TextFormatter\TextFormatterPlugIns\EarlyBoundTypes.cs.
+14:32:18	c 2020 Microsoft Corporation. All rights reserved
+14:32:18	
+14:32:18	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.79\content\bin\coretools\spkl.crmsvcutil.config'
+14:32:24	Code written to C:\Vigence\Projects\Vig Internal\TextFormatter\TextFormatterPlugIns\EarlyBoundTypes.cs.

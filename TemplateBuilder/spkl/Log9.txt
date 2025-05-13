@@ -1,0 +1,13 @@
+17:46:56		Read 10 Entities
+17:49:37	c 2022 Microsoft Corporation. All rights reserved
+17:49:37	
+17:49:37	Begin Reading Metadata from MetadataProviderService
+17:49:37	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'
+17:49:38		Begin Reading Metadata from Server
+17:50:52	c 2022 Microsoft Corporation. All rights reserved
+17:50:52	
+17:50:52	Begin Reading Metadata from MetadataProviderService
+17:50:52	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'
+17:50:53		Begin Reading Metadata from Server
+17:50:58	======================================================================================================================
+17:50:58	

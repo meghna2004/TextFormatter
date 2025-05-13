@@ -1,0 +1,34 @@
+17:39:39	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+17:39:39	c 2022 Microsoft Corporation. All rights reserved
+17:39:39	
+17:39:39	Begin Reading Metadata from MetadataProviderService
+17:39:39	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'
+17:39:41		Begin Reading Metadata from Server
+17:43:55	
+17:43:55	Exiting program with exception: Parameter count mismatch.
+17:46:51	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+17:46:56		Read 392 Global OptionSets
+17:46:56		Read 1 SDK Messages
+17:46:56		Completed Reading Metadata from Server - 00:00:04.4500943
+17:46:56	Completed Reading Metadata from MetadataProviderService - 00:00:05.5492977
+17:46:56	Begin Writing Code File
+17:46:56	CrmSvcUtil Error: 2 : Exiting program with exit code 2 due to exception : System.Reflection.TargetParameterCountException: Parameter count mismatch.
+17:46:56	   at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:46:56	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:46:56	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:46:56	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:46:56	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:46:56	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:46:56	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+17:46:56	CrmSvcUtil Error: 2 : ===== DETAIL ======
+17:49:37	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+17:49:43		Read 10 Entities
+17:50:52	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+17:59:00	c 2020 Microsoft Corporation. All rights reserved
+17:59:00	
+17:59:00	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.79\content\bin\coretools\spkl.crmsvcutil.config'
+17:59:06	Code written to C:\Vigence\Projects\Vig Internal\TextFormatter\TextFormatterPlugIns\EarlyBoundTypes.cs.
+13:00:05	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+13:00:12		Read 15 Entities
+14:30:26	CrmSvcUtil : CRM Service Utility [Version 9.1.0.82]
+14:32:18	CrmSvcUtil : CRM Service Utility [Version 9.1.0.82]

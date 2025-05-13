@@ -1,0 +1,33 @@
+17:39:48		Read 392 Global OptionSets
+17:39:48		Read 1 SDK Messages
+17:39:48		Completed Reading Metadata from Server - 00:00:06.7855169
+17:39:48	Completed Reading Metadata from MetadataProviderService - 00:00:08.5226731
+17:39:48	Begin Writing Code File
+17:39:48	CrmSvcUtil Error: 2 : Exiting program with exit code 2 due to exception : System.Reflection.TargetParameterCountException: Parameter count mismatch.
+17:39:48	   at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:39:48	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:39:48	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:39:48	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:39:48	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:39:48	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:39:48	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+17:39:48	CrmSvcUtil Error: 2 : ===== DETAIL ======
+17:39:48	CrmSvcUtil Error: 2 : Source	: mscorlib
+17:39:48	Method	: InvokeArgumentsCheck
+17:39:48	Date	: 17:39:48
+17:39:48	Time	: 04/03/2025
+17:39:48	Error	: Parameter count mismatch.
+17:39:48	Stack Trace	: at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:39:48	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:39:48	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:39:48	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:39:48	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:39:48	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:39:48	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+17:39:48	======================================================================================================================
+17:39:48	
+13:04:41	CrmSvcUtil : CRM Service Utility [Version 9.1.0.82]
+13:04:41	c 2020 Microsoft Corporation. All rights reserved
+13:04:41	
+13:04:41	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.79\content\bin\coretools\spkl.crmsvcutil.config'
+13:04:48	Code written to C:\Vigence\Projects\Vig Internal\TextFormatter\TextFormatterPlugIns\EarlyBoundTypes.cs.

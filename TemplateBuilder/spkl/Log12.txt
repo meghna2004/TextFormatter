@@ -1,0 +1,57 @@
+17:39:48		Read 10 Entities
+17:43:55		Read 392 Global OptionSets
+17:43:55		Read 1 SDK Messages
+17:43:55		Completed Reading Metadata from Server - 00:00:06.2925916
+17:43:55	Completed Reading Metadata from MetadataProviderService - 00:00:07.8004834
+17:43:55	Begin Writing Code File
+17:43:55	CrmSvcUtil Error: 2 : Exiting program with exit code 2 due to exception : System.Reflection.TargetParameterCountException: Parameter count mismatch.
+17:43:55	   at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:43:55	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:43:55	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:43:55	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:43:55	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:43:55	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:43:55	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+17:43:55	CrmSvcUtil Error: 2 : ===== DETAIL ======
+17:43:55	CrmSvcUtil Error: 2 : Source	: mscorlib
+17:43:55	Method	: InvokeArgumentsCheck
+17:43:55	Date	: 17:43:55
+17:43:55	Time	: 04/03/2025
+17:43:55	Error	: Parameter count mismatch.
+17:43:55	Stack Trace	: at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:43:55	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+17:43:55	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+17:43:55	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+17:43:55	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+17:43:55	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+17:43:55	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+17:43:55	======================================================================================================================
+17:43:55	
+13:00:12		Read 392 Global OptionSets
+13:00:12		Read 1 SDK Messages
+13:00:12		Completed Reading Metadata from Server - 00:00:05.6962941
+13:00:12	Completed Reading Metadata from MetadataProviderService - 00:00:07.3771749
+13:00:12	Begin Writing Code File
+13:00:12	CrmSvcUtil Error: 2 : Exiting program with exit code 2 due to exception : System.Reflection.TargetParameterCountException: Parameter count mismatch.
+13:00:12	   at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+13:00:12	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+13:00:12	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+13:00:12	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+13:00:12	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+13:00:12	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+13:00:12	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+13:00:12	CrmSvcUtil Error: 2 : ===== DETAIL ======
+13:00:12	CrmSvcUtil Error: 2 : Source	: mscorlib
+13:00:12	Method	: InvokeArgumentsCheck
+13:00:12	Date	: 13:00:12
+13:00:12	Time	: 29/04/2025
+13:00:12	Error	: Parameter count mismatch.
+13:00:12	Stack Trace	: at System.Reflection.RuntimeMethodInfo.InvokeArgumentsCheck(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+13:00:12	   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+13:00:12	   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+13:00:12	   at spkl.CrmSvcUtilExtensions.CodeGenerationService.Write(IOrganizationMetadata organizationMetadata, String language, String outputFile, String targetNamespace, IServiceProvider services)
+13:00:12	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.WriteCode(IOrganizationMetadata organizationMetadata)
+13:00:12	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Run()
+13:00:12	   at Microsoft.Crm.Services.Utility.CrmSvcUtil.Main(String[] args)
+13:00:12	======================================================================================================================
+13:00:12	
