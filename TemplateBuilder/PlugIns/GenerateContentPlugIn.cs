@@ -4,6 +4,8 @@ using TextFormatter.TemplateBuilder;
 using Microsoft.Xrm.Sdk;
 using TemplateBuilder.Services;
 using TemplateBuilder.OutputStrategies;
+using TemplateBuilder.Enum;
+using System;
 
 namespace TemplateBuilder.PlugIns
 {
@@ -44,7 +46,26 @@ namespace TemplateBuilder.PlugIns
                 {
                     tracingService.Trace("Inside For each to process Templates");
                     vig_customtemplate customTemplate = template.ToEntity<vig_customtemplate>();
-                    contentGenService.BuildContent(customTemplate.vig_textdescriptionbodyid.Id);
+                    string content = contentGenService.BuildContent(customTemplate.vig_textdescriptionbodyid.Id);
+                    //Get enum type
+                    var outputStrategyFactory = new OutputStrategyFactory();
+
+                    if (customTemplate.vig_outputtype != null &&
+                        System.Enum.IsDefined(typeof(TemplateType), customTemplate.vig_outputtype.Value))
+                    {
+                        var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
+                        Console.WriteLine("Enum value is: " + tempType);
+
+                        var strategy = outputStrategyFactory.GetOutputStrategy(tempType);
+                        strategy.OutputContent(content, context, service);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid choice value.");
+                    }
+
+
+
                 }
             }
            /* string fetchTemplateConfig = string.Format(@"");

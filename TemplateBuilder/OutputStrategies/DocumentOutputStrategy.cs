@@ -9,7 +9,7 @@ namespace TemplateBuilder.OutputStrategies
 {
     public class DocumentOutputStrategy: IOutputStrategy
     {
-        public void OutputContent(string content, IPluginExecutionContext context)
+        public void OutputContent(string content, IPluginExecutionContext context, IOrganizationService service)
         {
 
         }

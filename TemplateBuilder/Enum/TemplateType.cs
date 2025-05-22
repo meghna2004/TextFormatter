@@ -8,7 +8,7 @@ namespace TemplateBuilder.Enum
 {
     public enum TemplateType
     {
-        Email = 1,
-        Document = 2
+        Email = 949800000,
+        DocumentTemplate = 949800001
     }
 }

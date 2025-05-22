@@ -61,6 +61,7 @@ namespace TemplateBuilder.Services
                 {
                     emailBodyHtml = emailBodyHtml.Replace(column.Key, column.Value);
                 }
+                _tracingService.Trace("HTML Body Result: "+ emailBodyHtml);
                 return emailBodyHtml;
             }
             catch
