@@ -681,3 +681,213 @@
 11:43:20	Updating Image 'PreImage'
 11:43:20	Adding to solution 'EmailFormatter'
 11:43:20	Processed 1 config(s)
+14:02:55	Deploying Plugins
+14:02:55	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:02:55	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:02:55	Checking assembly 'TemplateBuilder.dll' for plugins
+14:02:55	7 plugin(s) found!
+14:02:55	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:02:56	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:03:00	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:03:00	Adding to solution 'EmailFormatter'
+14:03:04	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:03:04	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:03:06	Updating Image 'PreImage'
+14:03:06	Adding to solution 'EmailFormatter'
+14:03:06	Processed 1 config(s)
+14:13:59	Deploying Plugins
+14:13:59	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:13:59	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:13:59	Checking assembly 'TemplateBuilder.dll' for plugins
+14:13:59	7 plugin(s) found!
+14:13:59	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:13:59	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:14:00	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:14:00	Adding to solution 'EmailFormatter'
+14:14:00	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:14:01	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:14:01	Updating Image 'PreImage'
+14:14:01	Adding to solution 'EmailFormatter'
+14:14:01	Processed 1 config(s)
+14:19:07	Deploying Plugins
+14:19:07	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:19:07	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:19:08	Checking assembly 'TemplateBuilder.dll' for plugins
+14:19:08	7 plugin(s) found!
+14:19:08	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:19:08	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:19:09	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:19:09	Adding to solution 'EmailFormatter'
+14:19:09	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:19:10	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:19:10	Updating Image 'PreImage'
+14:19:10	Adding to solution 'EmailFormatter'
+14:19:10	Processed 1 config(s)
+14:31:34	Deploying Plugins
+14:31:34	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:31:34	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:31:34	Checking assembly 'TemplateBuilder.dll' for plugins
+14:31:34	7 plugin(s) found!
+14:31:34	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:31:34	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:31:35	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:31:35	Adding to solution 'EmailFormatter'
+14:31:36	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:31:36	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:31:37	Updating Image 'PreImage'
+14:31:37	Adding to solution 'EmailFormatter'
+14:31:37	Processed 1 config(s)
+14:37:52	Deploying Plugins
+14:37:52	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:37:52	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:37:52	Checking assembly 'TemplateBuilder.dll' for plugins
+14:37:52	7 plugin(s) found!
+14:37:53	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:37:53	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:37:53	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:37:53	Adding to solution 'EmailFormatter'
+14:37:54	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:37:54	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:37:54	Updating Image 'PreImage'
+14:37:54	Adding to solution 'EmailFormatter'
+14:37:55	Processed 1 config(s)
+14:43:48	Deploying Plugins
+14:43:49	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:43:49	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:43:49	Checking assembly 'TemplateBuilder.dll' for plugins
+14:43:49	7 plugin(s) found!
+14:43:49	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:43:49	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:43:50	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:43:50	Adding to solution 'EmailFormatter'
+14:43:50	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:43:51	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:43:51	Updating Image 'PreImage'
+14:43:51	Adding to solution 'EmailFormatter'
+14:43:51	Processed 1 config(s)
+14:44:57	Deploying Plugins
+14:44:57	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:44:57	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:44:57	Checking assembly 'TemplateBuilder.dll' for plugins
+14:44:57	7 plugin(s) found!
+14:44:57	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:44:57	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:44:58	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:44:58	Adding to solution 'EmailFormatter'
+14:44:58	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:44:59	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:44:59	Updating Image 'PreImage'
+14:44:59	Adding to solution 'EmailFormatter'
+14:44:59	Processed 1 config(s)
+14:46:05	Deploying Plugins
+14:46:05	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:46:05	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:46:05	Checking assembly 'TemplateBuilder.dll' for plugins
+14:46:05	7 plugin(s) found!
+14:46:05	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:46:05	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:46:06	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:46:06	Adding to solution 'EmailFormatter'
+14:46:06	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:46:07	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:46:07	Updating Image 'PreImage'
+14:46:07	Adding to solution 'EmailFormatter'
+14:46:07	Processed 1 config(s)
+14:51:29	Deploying Plugins
+14:51:29	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:51:29	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:51:29	Checking assembly 'TemplateBuilder.dll' for plugins
+14:51:29	7 plugin(s) found!
+14:51:29	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:51:30	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:51:30	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:51:30	Adding to solution 'EmailFormatter'
+14:51:31	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:51:31	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:51:32	Updating Image 'PreImage'
+14:51:32	Adding to solution 'EmailFormatter'
+14:51:32	Processed 1 config(s)
+14:55:26	Deploying Plugins
+14:55:26	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+14:55:26	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+14:55:26	Checking assembly 'TemplateBuilder.dll' for plugins
+14:55:26	7 plugin(s) found!
+14:55:26	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+14:55:27	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+14:55:27	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+14:55:27	Adding to solution 'EmailFormatter'
+14:55:27	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+14:55:28	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+14:55:28	Updating Image 'PreImage'
+14:55:28	Adding to solution 'EmailFormatter'
+14:55:28	Processed 1 config(s)
+15:05:20	Deploying Plugins
+15:05:20	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+15:05:20	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+15:05:20	Checking assembly 'TemplateBuilder.dll' for plugins
+15:05:20	7 plugin(s) found!
+15:05:21	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+15:05:21	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+15:05:22	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+15:05:22	Adding to solution 'EmailFormatter'
+15:05:23	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+15:05:24	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+15:05:25	Updating Image 'PreImage'
+15:05:25	Adding to solution 'EmailFormatter'
+15:05:25	Processed 1 config(s)
+15:07:15	Deploying Plugins
+15:07:15	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+15:07:15	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+15:07:15	Checking assembly 'TemplateBuilder.dll' for plugins
+15:07:15	7 plugin(s) found!
+15:07:15	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+15:07:15	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+15:07:16	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+15:07:16	Adding to solution 'EmailFormatter'
+15:07:16	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+15:07:16	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+15:07:17	Updating Image 'PreImage'
+15:07:17	Adding to solution 'EmailFormatter'
+15:07:17	Processed 1 config(s)
+15:08:28	Deploying Plugins
+15:08:28	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+15:08:28	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+15:08:28	Checking assembly 'TemplateBuilder.dll' for plugins
+15:08:28	7 plugin(s) found!
+15:08:28	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+15:08:28	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+15:08:29	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+15:08:29	Adding to solution 'EmailFormatter'
+15:08:29	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+15:08:29	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+15:08:29	Updating Image 'PreImage'
+15:08:30	Adding to solution 'EmailFormatter'
+15:08:30	Processed 1 config(s)
+15:09:14	Deploying Plugins
+15:09:14	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+15:09:14	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+15:09:14	Checking assembly 'TemplateBuilder.dll' for plugins
+15:09:14	7 plugin(s) found!
+15:09:14	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+15:09:14	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+15:09:15	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+15:09:15	Adding to solution 'EmailFormatter'
+15:09:15	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+15:09:15	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+15:09:16	Updating Image 'PreImage'
+15:09:16	Adding to solution 'EmailFormatter'
+15:09:16	Processed 1 config(s)
+15:14:09	Deploying Plugins
+15:14:09	Searching for plugin config in 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\spkl\..'
+15:14:09	Using Config 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder'
+15:14:09	Checking assembly 'TemplateBuilder.dll' for plugins
+15:14:09	7 plugin(s) found!
+15:14:09	Checking for orphaned PluginTypes: 'TemplateBuilder' 
+15:14:09	Updating Plugin 'TemplateBuilder' from 'C:\Vigence\Projects\Vig Internal\TextFormatter\TemplateBuilder\bin\Debug\TemplateBuilder.dll'
+15:14:10	Adding Plugin 'TemplateBuilder' to solution 'EmailFormatter'
+15:14:10	Adding to solution 'EmailFormatter'
+15:14:10	Updating Type 'TemplateBuilder.PlugIns.RegisterPlugInStep'
+15:14:11	Updating Step 'TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting'
+15:14:11	Updating Image 'PreImage'
+15:14:11	Adding to solution 'EmailFormatter'
+15:14:11	Processed 1 config(s)

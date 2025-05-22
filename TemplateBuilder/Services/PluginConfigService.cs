@@ -133,10 +133,11 @@ namespace TemplateBuilder.Services
         }
         private Guid GetPluginTypeId()
         {
+            _context.Trace("Query Expression to retrive the plugin type (the actual plugin code that is registered on this step)");
             QueryExpression query = new QueryExpression("plugintype");
             query.ColumnSet = new ColumnSet("plugintypeid");
             query.Criteria.AddCondition("typename", ConditionOperator.Equal, pluginTypeName);
-
+            _context.Trace("Query Expression executed");
             var result = _service.RetrieveMultiple(query);
             if (result.Entities.Count > 0)
             {
@@ -146,14 +147,18 @@ namespace TemplateBuilder.Services
         }
         public (Guid,string) GetPluginStepId(string messageName, string triggerEntity, string executionMode, string stage)
         {
+            _context.Trace("Get PluginType");
             Guid pluginTypeId = GetPluginTypeId();
+            _context.Trace("Plugin Type Retrieved");
 
             // Now try to query the SdkMessageProcessingStep entity
+            Guid sdkMessageFilterId = GetSdkMessageFilter(triggerEntity, GetSdkMessageId(messageName));
+
             QueryExpression query = new QueryExpression("sdkmessageprocessingstep");
             query.ColumnSet = new ColumnSet("sdkmessageprocessingstepid", "name","filteringattributes");
             query.Criteria.AddCondition("plugintypeid", ConditionOperator.Equal, pluginTypeId);
             query.Criteria.AddCondition("sdkmessageid", ConditionOperator.Equal, GetSdkMessageId(messageName));
-            query.Criteria.AddCondition("primaryobjecttypecode", ConditionOperator.Equal, triggerEntity);
+            query.Criteria.AddCondition("sdkmessagefilterid", ConditionOperator.Equal, sdkMessageFilterId);
             query.Criteria.AddCondition("mode", ConditionOperator.Equal, executionMode);
             query.Criteria.AddCondition("stage", ConditionOperator.Equal, stage);
 
