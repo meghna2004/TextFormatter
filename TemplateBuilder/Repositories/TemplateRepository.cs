@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
+using TemplateBuilder.DTO;
 using TemplateBuilder.Services;
 using TextFormatter;
 using TextFormatter.TemplateBuilder;
@@ -60,7 +61,7 @@ namespace TemplateBuilder.Repositories
         {
             QueryExpression getTemplate = new QueryExpression("vig_customtemplate")
             {
-                ColumnSet = new ColumnSet("vig_customtemplateid", "vig_textdescriptionbodyid"),
+                ColumnSet = new ColumnSet("vig_customtemplateid", "vig_textdescriptionbodyid","vig_outputtype"),
                 Criteria =
             {
                 Conditions =
@@ -81,7 +82,7 @@ namespace TemplateBuilder.Repositories
         }
         public TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
         {
-            //Change Query
+            //Change Query to retrive query placeholder.
             _tracing.Trace("Create Template Model Query");
             string retrieveTemplateSections = string.Format(@"<fetch>
                                                           <entity name='vig_section'>
@@ -104,11 +105,19 @@ namespace TemplateBuilder.Repositories
                                                                   <attribute name='vig_columnlogicalname' />
                                                                   <attribute name='vig_sequence' />
                                                                   <order attribute='vig_sequence' />
+                                                               <link-entity name='vig_queryplaceholder' from= 'vig_queryid' to= 'vig_queryid' link-type= 'outer' alias= 'QP'>
+                                                                 <attribute name= 'vig_datatype' />
+                                                                 <attribute name= 'vig_name' />
+                                                                 <attribute name= 'vig_sequence' />
+                                                                 <attribute name= 'vig_value' />
+                                                                 <attribute name= 'vig_guidtype' />
+                                                               </link-entity>
+                                                            </link-entity>
                                                                 </link-entity>
                                                               </link-entity>
                                                             </link-entity>
                                                           </entity>
-                                                        </fetch>",templateDesId.ToString());
+                                                        </fetch>", templateDesId.ToString());
             EntityCollection sectionsEntity = _service.RetrieveMultiple(new FetchExpression(retrieveTemplateSections));
             _tracing.Trace("Query Ran");
 
@@ -123,11 +132,16 @@ namespace TemplateBuilder.Repositories
                 int querySeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Q.vig_fetchsequence").Value);
                 int dcSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("DC.vig_sequence").Value);
                 int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
+                int qpSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("QP.vig_sequence").Value);
                 var fetchQuery = string.Format(entity.GetAttributeValue<AliasedValue>("Q.vig_fetchquery").Value.ToString());
                 var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
                 var secFormat = entity.GetAttributeValue<string>("vig_format");
                 var dcFormat = string.Empty;
                 var dcName = entity.GetAttributeValue<AliasedValue>("DC.vig_name").Value.ToString();
+                var qpName = entity.GetAttributeValue<AliasedValue>("QP.vig_name").Value.ToString(); ;
+                var qpValue = entity.GetAttributeValue<AliasedValue>("QP.vig_value").Value.ToString(); ;
+                var qpDataType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_datatype").Value;
+                var qpGuidType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_guidtype").Value;
                 _tracing.Trace("All Variables Initialised");
                 if (entity.Contains("DC.vig_format"))
                 {
@@ -173,6 +187,19 @@ namespace TemplateBuilder.Repositories
                     sequence = columnSeq,
                     colName = colLogicalName
                 });
+                var qPlaceholder = query.placeholders.FirstOrDefault(p =>p.sequence==qpSeq);
+                if(qPlaceholder == null)
+                {
+                    qPlaceholder = new QueryPlaceholders
+                    {
+                        sequence = qpSeq,
+                        name = qpName,
+                        value = qpValue,
+                        dataType = qpDataType,
+                        guidType = qpGuidType
+                    };
+                    query.placeholders.Add(qPlaceholder);
+                }
             }
             _tracing.Trace("Template Model Created");
             return descriptionBody;

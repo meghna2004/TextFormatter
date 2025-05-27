@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using TemplateBuilder.DTO;
 namespace TextFormatter.TemplateBuilder
 {
     public class EmailFormatterFunctions:PluginBase

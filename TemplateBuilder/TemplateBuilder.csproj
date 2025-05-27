@@ -132,6 +132,7 @@
     <Compile Include="CustomEmails.cs" />
     <Compile Include="CustomTemplates.cs" />
     <Compile Include="DTO\Columns.cs" />
+    <Compile Include="DTO\QueryPlaceholders.cs" />
     <Compile Include="DTO\SubSections.cs" />
     <Compile Include="DTO\TextDescriptionBodies.cs" />
     <Compile Include="DTO\Queries.cs" />

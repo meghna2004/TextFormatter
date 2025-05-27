@@ -2,12 +2,9 @@
 using Microsoft.Xrm.Sdk;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
-using TextFormatter.TemplateBuilder;
+using TemplateBuilder.DTO;
 
 namespace TemplateBuilder.Repositories
 {
@@ -26,12 +23,13 @@ namespace TemplateBuilder.Repositories
             string formattedQuery = GetFetchQuery(fetchXml);
             try
             {
-                EntityCollection retrievedEntities= _service.RetrieveMultiple(new FetchExpression(formattedQuery));
+                EntityCollection retrievedEntities = _service.RetrieveMultiple(new FetchExpression(formattedQuery));
                 string value = string.Empty;
                 string format = string.Empty;
                 _tracing.Trace("EmailFormatterFunctions: Test 4");
                 foreach (Entity entity in retrievedEntities.Entities)
                 {
+                    //redo this bit to use tokens.
                     _tracing.Trace("EmailFormatterFunctions: Test 5");
                     foreach (var dc in subSection)
                     {
@@ -72,7 +70,27 @@ namespace TemplateBuilder.Repositories
                 throw new InvalidPluginExecutionException("Failed to execute fetch query: " + ex.Message);
             }
         }
-        public  string GetFetchQuery(string queryXml)
+        public string FormatQueryWithPlaceholders(string fetchXML, List<QueryPlaceholders> placeholders)
+        {
+            //Check placeholder name field with placeholder text inside fetchXMLtext inside {}.
+            //Retrive values as specified.
+            /*
+             * if(qp.Value ==null)
+             *   if(qp.valueFrom == primaryEntity) -->pass in the trigger entity
+             *     try
+             *       if(triggerEntity.Contains("{qp.name}")
+             *          qp.Value = triggerEntity["qp.name"].Value.ToString()
+             *            
+             */
+            //Need to use tokens here as well.
+            string formattedQuery = string.Empty;
+           foreach(var qp in placeholders)
+            {
+               fetchXML.Replace(qp.name, qp.value);
+            }
+            return fetchXML;
+        }
+        public string GetFetchQuery(string queryXml)
         {
             try
             {

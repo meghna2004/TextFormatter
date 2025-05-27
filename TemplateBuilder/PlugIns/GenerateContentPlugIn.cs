@@ -6,6 +6,7 @@ using TemplateBuilder.Services;
 using TemplateBuilder.OutputStrategies;
 using TemplateBuilder.Enum;
 using System;
+using System.Drawing.Imaging;
 
 namespace TemplateBuilder.PlugIns
 {
@@ -18,9 +19,9 @@ namespace TemplateBuilder.PlugIns
             var tracingService = localcontext.TracingService;
             PluginConfigService pluginConfigService = new PluginConfigService(service, localcontext);
             var templateRepo = new TemplateRepository(service,context,tracingService,pluginConfigService);
-            var queryRepo = new QueryRepository(service,tracingService);
-            var outputStrategy = new OutputStrategyFactory();
-            var contentGenService = new ContentGeneratorService(service, context,tracingService,templateRepo,queryRepo,outputStrategy);
+/*            var queryRepo = new QueryRepository(service,tracingService);
+*/            var outputStrategy = new OutputStrategyFactory();
+            var contentGenService = new ContentGeneratorService(service, context,tracingService,templateRepo,outputStrategy);
             //Retrieve config table
             //retrive all active and ready templates
             //execute
@@ -48,10 +49,14 @@ namespace TemplateBuilder.PlugIns
                     vig_customtemplate customTemplate = template.ToEntity<vig_customtemplate>();
                     string content = contentGenService.BuildContent(customTemplate.vig_textdescriptionbodyid.Id);
                     //Get enum type
-                    var outputStrategyFactory = new OutputStrategyFactory();
+                    tracingService.Trace("Enum value is: ");
+                    var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
+                    tracingService.Trace("Enum value is: " + tempType.ToString());
+                    var strategy = outputStrategy.GetOutputStrategy(tempType);
+                    strategy.OutputContent(content, context, service);
 
-                    if (customTemplate.vig_outputtype != null &&
-                        System.Enum.IsDefined(typeof(TemplateType), customTemplate.vig_outputtype.Value))
+                    /*if (customTemplate.vig_outputtype != null *//*&&
+                        System.Enum.IsDefined(typeof(TemplateType), customTemplate.vig_outputtype.Value)*//*)
                     {
                         var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
                         Console.WriteLine("Enum value is: " + tempType);
@@ -62,7 +67,7 @@ namespace TemplateBuilder.PlugIns
                     else
                     {
                         Console.WriteLine("Invalid choice value.");
-                    }
+                    }*/
 
 
 

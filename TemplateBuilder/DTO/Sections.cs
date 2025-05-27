@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TextFormatter.TemplateBuilder
+namespace TemplateBuilder.DTO
 {
     public class Sections
     {
