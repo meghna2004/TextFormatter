@@ -1,0 +1,7 @@
+{
+  "showFullScreenExpander": true,
+  "enterMode": 2,
+  "showAsTabControl": true,
+  "showHtml": true,
+  "toolbarLocation": "top"
+}

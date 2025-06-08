@@ -9,6 +9,5 @@ namespace TemplateBuilder.DTO
         public string contentValue { get; set; }        
         public string name { get; set; }
         public string format { get; set; }
-        public string defaultFormat = "<p>placeholder</p>";
     }
 }

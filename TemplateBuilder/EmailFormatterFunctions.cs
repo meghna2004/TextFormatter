@@ -44,7 +44,7 @@ namespace TextFormatter.TemplateBuilder
                             }
                             else
                             {
-                                format += dc.defaultFormat.Replace("placeholder", entity[c.colName].ToString());
+                             //   format += dc.defaultFormat.Replace("placeholder", entity[c.colName].ToString());
                             }
                         }
                         else

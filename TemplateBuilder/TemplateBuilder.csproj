@@ -139,7 +139,9 @@
     <Compile Include="DTO\Sections.cs" />
     <Compile Include="EarlyBoundTypes.cs" />
     <Compile Include="EmailFormatterFunctions.cs" />
+    <Compile Include="Enum\DataType.cs" />
     <Compile Include="Enum\TemplateType.cs" />
+    <Compile Include="Enum\ValueFrom.cs" />
     <Compile Include="OutputStrategies\DocumentOutputStrategy.cs" />
     <Compile Include="OutputStrategies\EmailOutputStrategy.cs" />
     <Compile Include="OutputStrategies\IOutputStrategy.cs" />
@@ -147,13 +149,13 @@
     <Compile Include="PlugIns\GenerateContentPlugIn.cs" />
     <Compile Include="PlugIns\RegisterPlugInStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\ConfigurationRepository.cs" />
     <Compile Include="Repositories\QueryRepository.cs" />
     <Compile Include="Repositories\TemplateRepository.cs" />
     <Compile Include="Services\ContentGeneratorService.cs" />
     <Compile Include="Services\PluginConfigService.cs" />
     <Compile Include="Utilities\PluginUtils.cs" />
     <Compile Include="Utilities\QueryBuilder.cs" />
+    <Compile Include="Utilities\TokenProcessor.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>

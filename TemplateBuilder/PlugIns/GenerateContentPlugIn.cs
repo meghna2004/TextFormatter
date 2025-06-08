@@ -18,10 +18,9 @@ namespace TemplateBuilder.PlugIns
             var service = localcontext.OrganizationService;
             var tracingService = localcontext.TracingService;
             PluginConfigService pluginConfigService = new PluginConfigService(service, localcontext);
-            var templateRepo = new TemplateRepository(service,context,tracingService,pluginConfigService);
-/*            var queryRepo = new QueryRepository(service,tracingService);
-*/            var outputStrategy = new OutputStrategyFactory();
-            var contentGenService = new ContentGeneratorService(service, context,tracingService,templateRepo,outputStrategy);
+            TemplateRepository templateRepo = new TemplateRepository(service,context,tracingService,pluginConfigService);
+            var outputStrategy = new OutputStrategyFactory();
+            var contentGenService = new ContentGeneratorService(service, context,tracingService,templateRepo);
             //Retrieve config table
             //retrive all active and ready templates
             //execute

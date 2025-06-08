@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
+using System.Runtime.Remoting.Services;
 using TemplateBuilder.DTO;
+using TemplateBuilder.Enum;
 using TemplateBuilder.Services;
 using TextFormatter;
 using TextFormatter.TemplateBuilder;
@@ -53,6 +55,8 @@ namespace TemplateBuilder.Repositories
             if (templateConfigsRetrieved.Entities.Count > 0)
             {
                 _tracing.Trace("Template Config Retrieved");
+                _tracing.Trace("---------------------------");
+
                 templateConfig = templateConfigsRetrieved.Entities[0].ToEntity<vig_templateconfigurationsetting>();
             }
             return templateConfig;
@@ -78,46 +82,47 @@ namespace TemplateBuilder.Repositories
 
                 return templatesRetrieved;
             }
+            _tracing.Trace("---------------------------");
             return null;
         }
         public TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
         {
             //Change Query to retrive query placeholder.
-            _tracing.Trace("Create Template Model Query");
+            _tracing.Trace("Create Template Model Query: "+ templateDesId.ToString());
             string retrieveTemplateSections = string.Format(@"<fetch>
-                                                          <entity name='vig_section'>
-                                                            <attribute name='vig_format' />
-                                                            <attribute name='vig_sequence' />
-                                                            <filter>
-                                                              <condition attribute='vig_textdescriptionbodyid' operator='eq' value='{0}' />
-                                                            </filter>
-                                                            <order attribute='vig_sequence' />
-                                                            <link-entity name='vig_query' from='vig_sectionid' to='vig_sectionid' link-type='inner' alias='Q'>
-                                                              <attribute name='vig_fetchquery' />
-                                                              <attribute name='vig_fetchsequence' />
-                                                              <order attribute='vig_fetchsequence' />
-                                                              <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='inner' alias='DC'>
-                                                                <attribute name='vig_name' />
-                                                                <attribute name='vig_sequence' />
-                                                                <attribute name='vig_format' />
-                                                                <order attribute='vig_sequence' />
-                                                                <link-entity name='vig_column' from='vig_subsectionid' to='vig_subsectionid' link-type='inner' alias='Col'>
-                                                                  <attribute name='vig_columnlogicalname' />
-                                                                  <attribute name='vig_sequence' />
-                                                                  <order attribute='vig_sequence' />
-                                                               <link-entity name='vig_queryplaceholder' from= 'vig_queryid' to= 'vig_queryid' link-type= 'outer' alias= 'QP'>
-                                                                 <attribute name= 'vig_datatype' />
-                                                                 <attribute name= 'vig_name' />
-                                                                 <attribute name= 'vig_sequence' />
-                                                                 <attribute name= 'vig_value' />
-                                                                 <attribute name= 'vig_guidtype' />
-                                                               </link-entity>
-                                                            </link-entity>
-                                                                </link-entity>
-                                                              </link-entity>
-                                                            </link-entity>
-                                                          </entity>
-                                                        </fetch>", templateDesId.ToString());
+                                                                  <entity name='vig_section'>
+                                                                    <attribute name='vig_format' />
+                                                                    <attribute name='vig_sequence' />
+                                                                    <filter>
+                                                                      <condition attribute='vig_textdescriptionbodyid' operator='eq' value='{0}' />
+                                                                    </filter>
+                                                                    <order attribute='vig_sequence' />
+                                                                    <link-entity name='vig_query' from='vig_sectionid' to='vig_sectionid' link-type='inner' alias='Q'>
+                                                                      <attribute name='vig_fetchquery' />
+                                                                      <attribute name='vig_fetchsequence' />
+                                                                      <order attribute='vig_fetchsequence' />
+                                                                      <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='inner' alias='DC'>
+                                                                        <attribute name='vig_name' />
+                                                                        <attribute name='vig_sequence' />
+                                                                        <attribute name='vig_format' />
+                                                                        <order attribute='vig_sequence' />
+                                                                        <link-entity name='vig_column' from='vig_subsectionid' to='vig_subsectionid' link-type='inner' alias='Col'>
+                                                                          <attribute name='vig_columnlogicalname' />
+                                                                          <attribute name='vig_sequence' />
+                                                                          <order attribute='vig_sequence' />
+                                                                        </link-entity>
+                                                                      </link-entity>
+                                                                      <link-entity name='vig_queryplaceholder' from= 'vig_queryid' to= 'vig_queryid' link-type= 'outer' alias= 'QP'>
+                                                                         <attribute name= 'vig_datatype' />
+                                                                         <attribute name= 'vig_name' />
+                                                                         <attribute name= 'vig_sequence' />
+                                                                         <attribute name= 'vig_value' />
+                                                                         <attribute name= 'vig_valuefrom' />
+                                                                         <order attribute='vig_sequence' />
+                                                                      </link-entity>
+                                                                    </link-entity>
+                                                                  </entity>
+                                                              </fetch>", templateDesId.ToString());
             EntityCollection sectionsEntity = _service.RetrieveMultiple(new FetchExpression(retrieveTemplateSections));
             _tracing.Trace("Query Ran");
 
@@ -129,23 +134,42 @@ namespace TemplateBuilder.Repositories
             {
                 _tracing.Trace("Initilise Variables with Values retrieved");
                 var sectionSeq = entity.GetAttributeValue<int>("vig_sequence");
+                _tracing.Trace("Variable 1 "+ sectionSeq);
                 int querySeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Q.vig_fetchsequence").Value);
+                _tracing.Trace("Variable 2 "+ querySeq);
                 int dcSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("DC.vig_sequence").Value);
+                _tracing.Trace("Variable 3 "+ dcSeq);
                 int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
+                _tracing.Trace("Variable 4 "+ columnSeq);
                 int qpSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("QP.vig_sequence").Value);
-                var fetchQuery = string.Format(entity.GetAttributeValue<AliasedValue>("Q.vig_fetchquery").Value.ToString());
+                _tracing.Trace("Variable 5 "+ qpSeq);
+                var fetchQuery = entity.GetAttributeValue<AliasedValue>("Q.vig_fetchquery").Value.ToString();
+                _tracing.Trace("Variable 6 "+ fetchQuery);
                 var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
+                _tracing.Trace("Variable 7 "+ colLogicalName);
                 var secFormat = entity.GetAttributeValue<string>("vig_format");
+                _tracing.Trace("Variable 8 "+ secFormat);
                 var dcFormat = string.Empty;
                 var dcName = entity.GetAttributeValue<AliasedValue>("DC.vig_name").Value.ToString();
-                var qpName = entity.GetAttributeValue<AliasedValue>("QP.vig_name").Value.ToString(); ;
-                var qpValue = entity.GetAttributeValue<AliasedValue>("QP.vig_value").Value.ToString(); ;
+                _tracing.Trace("Variable 9 "+ dcName);
+                var qpName = entity.GetAttributeValue<AliasedValue>("QP.vig_name").Value.ToString();
+                _tracing.Trace("Variable 10 "+ qpName);
+                var qpValue = string.Empty;
+                if (entity.Contains("QP.vig_value"))
+                {
+                    qpValue = entity.GetAttributeValue<AliasedValue>("QP.vig_value").Value.ToString();
+                    _tracing.Trace("Variable 11 "+ qpValue);
+                }
+                _tracing.Trace("Getting Query placeholder values");
                 var qpDataType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_datatype").Value;
-                var qpGuidType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_guidtype").Value;
+                _tracing.Trace("Variable 12 "+ qpDataType);
+                var qpGuidType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_valuefrom").Value;
+                _tracing.Trace("Variable 13 "+ qpGuidType);
                 _tracing.Trace("All Variables Initialised");
                 if (entity.Contains("DC.vig_format"))
                 {
                     dcFormat = entity.GetAttributeValue<AliasedValue>("DC.vig_format").Value.ToString();
+                    _tracing.Trace("Variable 14 "+ dcFormat);
                 }
                 var section = descriptionBody.sectionClasses.FirstOrDefault(s => s.sequence == sectionSeq);
                 if (section == null)
@@ -166,6 +190,7 @@ namespace TemplateBuilder.Repositories
                     {
                         sequence = querySeq,
                         contentClasses = new List<SubSections>(),
+                        placeholders = new List<QueryPlaceholders>(),
                         queryText = fetchQuery
                     };
                     section.queryClasses.Add(query);
@@ -195,8 +220,8 @@ namespace TemplateBuilder.Repositories
                         sequence = qpSeq,
                         name = qpName,
                         value = qpValue,
-                        dataType = qpDataType,
-                        guidType = qpGuidType
+                        dataType = (DataType)qpDataType.Value,
+                        valueFrom = (ValueFrom)qpGuidType.Value
                     };
                     query.placeholders.Add(qPlaceholder);
                 }

@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xrm.Sdk;
+using TemplateBuilder.Enum;
 
 namespace TemplateBuilder.DTO
 {
     public class QueryPlaceholders
     {
-        public OptionSetValue dataType { get; set; }
-        public OptionSetValue guidType { get; set; }
+        public DataType dataType { get; set; }
+        public ValueFrom valueFrom { get; set; }
         public string name { get; set; }
         public string value { get; set; }
         public int sequence { get; set; }
