@@ -141,8 +141,6 @@ namespace TemplateBuilder.Repositories
                 _tracing.Trace("Variable 3 "+ dcSeq);
                 int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
                 _tracing.Trace("Variable 4 "+ columnSeq);
-                int qpSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("QP.vig_sequence").Value);
-                _tracing.Trace("Variable 5 "+ qpSeq);
                 var fetchQuery = entity.GetAttributeValue<AliasedValue>("Q.vig_fetchquery").Value.ToString();
                 _tracing.Trace("Variable 6 "+ fetchQuery);
                 var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
@@ -152,19 +150,32 @@ namespace TemplateBuilder.Repositories
                 var dcFormat = string.Empty;
                 var dcName = entity.GetAttributeValue<AliasedValue>("DC.vig_name").Value.ToString();
                 _tracing.Trace("Variable 9 "+ dcName);
-                var qpName = entity.GetAttributeValue<AliasedValue>("QP.vig_name").Value.ToString();
+                var qpName = string.Empty;
                 _tracing.Trace("Variable 10 "+ qpName);
                 var qpValue = string.Empty;
-                if (entity.Contains("QP.vig_value"))
+                int qpSeq = 0;
+                var qpDataType = new OptionSetValue();
+                var qpGuidType = new OptionSetValue();
+                if (entity.Contains("QP.vig_name"))
                 {
-                    qpValue = entity.GetAttributeValue<AliasedValue>("QP.vig_value").Value.ToString();
-                    _tracing.Trace("Variable 11 "+ qpValue);
+                     qpName = entity.GetAttributeValue<AliasedValue>("QP.vig_name").Value.ToString();
+                    if (entity.Contains("QP.vig_value"))
+                    {
+                        qpValue = entity.GetAttributeValue<AliasedValue>("QP.vig_value").Value.ToString();
+                        _tracing.Trace("Variable 11 " + qpValue);
+                    }
+                     qpSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("QP.vig_sequence").Value);
+                    _tracing.Trace("Variable 5 " + qpSeq);
+                     qpDataType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_datatype").Value;
+                     qpGuidType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_valuefrom").Value;
+                    _tracing.Trace("Variable 12 " + qpDataType);
+
+                    _tracing.Trace("Variable 13 " + qpGuidType);
                 }
+
                 _tracing.Trace("Getting Query placeholder values");
-                var qpDataType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_datatype").Value;
-                _tracing.Trace("Variable 12 "+ qpDataType);
-                var qpGuidType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_valuefrom").Value;
-                _tracing.Trace("Variable 13 "+ qpGuidType);
+              
+                
                 _tracing.Trace("All Variables Initialised");
                 if (entity.Contains("DC.vig_format"))
                 {

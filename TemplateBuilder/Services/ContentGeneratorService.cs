@@ -122,7 +122,7 @@ namespace TemplateBuilder.Services
                             }*/
                         }
                         //populate the text of the subsection with the replaced values in.
-                        dc.contentValue = format;
+                        dc.contentValue += format;
                         _tracing.Trace("EmailFormatterFunctions: Test 8");
                     }
                 }
