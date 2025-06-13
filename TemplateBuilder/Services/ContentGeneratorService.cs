@@ -97,11 +97,11 @@ namespace TemplateBuilder.Services
                         }
                         //get the format of each subsection
                         //_tracing.Trace("Dc Format" + format);
-                        foreach (var c in dc.content)
+                        /*foreach (var c in dc.content)
                         {
-                            //call tokenprocessor here
+                           */ //call tokenprocessor here
                             //_tracing.Trace("EmailFormatterFunctions: Test 7" + c.colName);                      
-                            format = processToken.ReplaceTokens(c.colName, format, entity);
+                            format = processToken.ReplaceTokens(format, entity);
 
                             //get the value of the column name for each column inside the sub section
                             /*if (entity.Contains(c.colName))
@@ -120,12 +120,13 @@ namespace TemplateBuilder.Services
                             {
                                 throw new InvalidPluginExecutionException("Column not present in query");
                             }*/
-                        }
+                      //  }
                         //populate the text of the subsection with the replaced values in.
                         dc.contentValue += format;
                         _tracing.Trace("EmailFormatterFunctions: Test 8");
                     }
                 }
+
                 return subSection;
             }
             catch (Exception ex)

@@ -212,17 +212,17 @@ namespace TemplateBuilder.Repositories
                     subSections = new SubSections
                     {
                         sequence = dcSeq,
-                        content = new List<Columns>(),
+                       // content = new List<Columns>(),
                         name = dcName,
                         format = dcFormat
                     };
                     query.contentClasses.Add(subSections);
                 }
-                subSections.content.Add(new Columns
+               /* subSections.content.Add(new Columns
                 {
                     sequence = columnSeq,
                     colName = colLogicalName
-                });
+                });*/
                 var qPlaceholder = query.placeholders.FirstOrDefault(p =>p.sequence==qpSeq);
                 if(qPlaceholder == null)
                 {

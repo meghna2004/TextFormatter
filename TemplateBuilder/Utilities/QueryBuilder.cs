@@ -30,6 +30,7 @@ namespace TemplateBuilder.Utilities
             //Retrive values as specified.
             _tracing.Trace("Create TokenProcessor");
             //Need to use tokens here as well.
+            //Need a different token processor function for this. 
             TokenProcessor processor = new TokenProcessor(_tracing);
             string replacedQuery = string.Empty;
             foreach (var qp in placeholders)
@@ -38,7 +39,7 @@ namespace TemplateBuilder.Utilities
 
                 if (qp.value == null || qp.value == string.Empty)
                 {
-                   replacedQuery= processor.ReplaceTokens(qp.name,fetchXML,_primaryEntity);                   
+                   replacedQuery= processor.ReplaceTokens(fetchXML,_primaryEntity);                   
                 }
             }
             _tracing.Trace("TokenProcessor Successfull");
