@@ -1,17 +1,13 @@
 ﻿using Microsoft.Xrm.Sdk;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace TemplateBuilder.Utilities
 {
-    public static class XmlHelper
+    public class XmlHelper
     {
-        public static string ExtractFetchQuery(string xmlQuery)
+        public string ExtractFetchQuery(string xmlQuery)
         {
             try
             {

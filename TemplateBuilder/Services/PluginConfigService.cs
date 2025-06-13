@@ -20,8 +20,9 @@ namespace TemplateBuilder.Services
         }
         public Guid FindExistingPluginStep(string messageName, string primaryEntity)
         {
-            var sdkMessageId = GetSdkMessageId(messageName);
-            var sdkMessageFilterId = GetSdkMessageFilter(primaryEntity,sdkMessageId);
+            Guid sdkMessageId = GetSdkMessageId(messageName);
+            Guid sdkMessageFilterId = GetSdkMessageFilter(primaryEntity,sdkMessageId);
+            Guid pluginTypeId = GetPluginTypeId();
             QueryExpression queryExpression = new QueryExpression("sdkmessageprocessingstep")
             {
                 ColumnSet = new ColumnSet("sdkmessageprocessingstepid"),
@@ -35,7 +36,7 @@ namespace TemplateBuilder.Services
                             {
                                 new ConditionExpression("sdkmessageid", ConditionOperator.Equal, sdkMessageId),
                                 new ConditionExpression("sdkmessagefilterid", ConditionOperator.Equal, sdkMessageFilterId),
-                                new ConditionExpression("plugintypeid.name",ConditionOperator.Equal, pluginTypeName)
+                                new ConditionExpression("plugintypeid",ConditionOperator.Equal, pluginTypeId)
                             }
                         }
                     }
@@ -78,12 +79,13 @@ namespace TemplateBuilder.Services
                 pluginTypeId = _service.Create(pluginType);
             }           
             // Register the plugin step
-            Guid sdkMessageFilterId = GetSdkMessageFilter(primaryEntity, GetSdkMessageId(messageName));
+            Guid sdkmessageId = GetSdkMessageId(messageName);
+            Guid sdkMessageFilterId = GetSdkMessageFilter(primaryEntity, sdkmessageId);
 
             Entity sdkMessageProcessingStep = new Entity("sdkmessageprocessingstep")
             {
                 ["name"] = $"{messageName} of {primaryEntity} Step",
-                ["sdkmessageid"] = new EntityReference("sdkmessage", GetSdkMessageId(messageName)),
+                ["sdkmessageid"] = new EntityReference("sdkmessage",sdkmessageId),
                 ["plugintypeid"] = new EntityReference("plugintype", pluginTypeId),
                 ["mode"] = new OptionSetValue(executionMode.ToLower() == "asynchronous" ? 1 : 0), // 0 = Sync, 1 = Async
                 ["stage"] = new OptionSetValue(stage.ToLower() == "postoperation" ? 40 : 20), // 20 = preoperation, 40 = postoperation
@@ -170,18 +172,6 @@ namespace TemplateBuilder.Services
                 return (step.Id,step.GetAttributeValue<string>("filteringattributes"));
             }
             return (Guid.Empty,string.Empty);
-        }
-        public bool MatchFilterAttributes(Guid stepID, string filterAttributes)
-        {
-            var step = _service.Retrieve("sdkmessageprocessingstep", stepID, new ColumnSet("filteringattributes"));
-            if (step.Contains("filteringattributes"))
-            {
-                if(step.GetAttributeValue<string>("filteringattributes").ToLower() == filterAttributes.ToLower())
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

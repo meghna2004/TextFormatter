@@ -69,7 +69,7 @@ namespace TemplateBuilder.PlugIns
                 }
 
                 // Fully Qualified Name (FQN) of the plugin class containing the business logic
-                Guid sdkMessageProcessingStepID = pluginConfigService.CreatePluginStep(messageName, primaryEntity,stage,executionMode,filterAttributes);
+                Guid sdkMessageProcessingStepID = pluginConfigService.CreatePluginStep(primaryEntity, messageName,stage, executionMode,filterAttributes);
 
                 configTargetRecord.vig_sdkmessageprocessingstepid = new EntityReference("sdkmessageprocessingstep", sdkMessageProcessingStepID);
                 configTargetRecord.vig_name = $"{messageName} of {primaryEntity} Step"; 
