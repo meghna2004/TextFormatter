@@ -97,20 +97,15 @@ namespace TemplateBuilder.Repositories
                                                                       <condition attribute='vig_textdescriptionbodyid' operator='eq' value='{0}' />
                                                                     </filter>
                                                                     <order attribute='vig_sequence' />
-                                                                    <link-entity name='vig_query' from='vig_sectionid' to='vig_sectionid' link-type='inner' alias='Q'>
+                                                                    <link-entity name='vig_query' from='vig_sectionid' to='vig_sectionid' link-type='outer' alias='Q'>
                                                                       <attribute name='vig_fetchquery' />
                                                                       <attribute name='vig_fetchsequence' />
                                                                       <order attribute='vig_fetchsequence' />
-                                                                      <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='inner' alias='DC'>
+                                                                      <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='outer' alias='DC'>
                                                                         <attribute name='vig_name' />
                                                                         <attribute name='vig_sequence' />
                                                                         <attribute name='vig_format' />
-                                                                        <order attribute='vig_sequence' />
-                                                                        <link-entity name='vig_column' from='vig_subsectionid' to='vig_subsectionid' link-type='inner' alias='Col'>
-                                                                          <attribute name='vig_columnlogicalname' />
-                                                                          <attribute name='vig_sequence' />
-                                                                          <order attribute='vig_sequence' />
-                                                                        </link-entity>
+                                                                        <order attribute='vig_sequence' />                                                                        
                                                                       </link-entity>
                                                                       <link-entity name='vig_queryplaceholder' from= 'vig_queryid' to= 'vig_queryid' link-type= 'outer' alias= 'QP'>
                                                                          <attribute name= 'vig_datatype' />
@@ -139,12 +134,12 @@ namespace TemplateBuilder.Repositories
                 _tracing.Trace("Variable 2 "+ querySeq);
                 int dcSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("DC.vig_sequence").Value);
                 _tracing.Trace("Variable 3 "+ dcSeq);
-                int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
-                _tracing.Trace("Variable 4 "+ columnSeq);
+                //int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
+                //_tracing.Trace("Variable 4 "+ columnSeq);
                 var fetchQuery = entity.GetAttributeValue<AliasedValue>("Q.vig_fetchquery").Value.ToString();
                 _tracing.Trace("Variable 6 "+ fetchQuery);
-                var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
-                _tracing.Trace("Variable 7 "+ colLogicalName);
+               // var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
+               // _tracing.Trace("Variable 7 "+ colLogicalName);
                 var secFormat = entity.GetAttributeValue<string>("vig_format");
                 _tracing.Trace("Variable 8 "+ secFormat);
                 var dcFormat = string.Empty;
