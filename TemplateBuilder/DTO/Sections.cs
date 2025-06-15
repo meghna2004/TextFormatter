@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 
 namespace TemplateBuilder.DTO
 {
@@ -9,3 +9,4 @@ namespace TemplateBuilder.DTO
         public List<Queries> queryClasses { get; set; }
     }
 }
+*/

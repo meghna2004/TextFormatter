@@ -32,30 +32,29 @@ namespace TemplateBuilder.Services
             Dictionary<string, string> columnValues = new Dictionary<string, string>();
             string emailBodyHtml = string.Empty;
             string emailDes = string.Empty;
-            foreach (var s in descriptionFormatInfo.sectionClasses)
+            foreach (var q in descriptionFormatInfo.queries)
             {
                 _tracing.Trace("Inside for each for text desriptionbody in template model");
                 //retrieve the format of the whole section
-                emailBodyHtml += s.format;
-                foreach (var q in s.queryClasses)
+                emailBodyHtml += q.format;
+
+                //foreach queries inside sections retrieve the placeholders
+                string query = queryBuilder.FormatQueryWithPlaceholders(q.queryText, q.placeholders);
+                //retrieve all query placeholders and replace in query text
+
+                ExecuteFetchAndPopulateValues(query, q.subSections);
+                foreach (var dc in q.subSections)
                 {
-                    //foreach queries inside sections retrieve the placeholders
-                    string query = queryBuilder.FormatQueryWithPlaceholders(q.queryText,q.placeholders);
-                    //retrieve all query placeholders and replace in query text
-                   
-                    ExecuteFetchAndPopulateValues(query,q.contentClasses);
-                    foreach (var dc in q.contentClasses)
+                    if (!columnValues.ContainsKey(dc.name))
                     {
-                        if (!columnValues.ContainsKey(dc.name))
-                        {
-                            columnValues.Add(dc.name, dc.contentValue);
-                        }
-                        else
-                        {
-                            columnValues[dc.name] += dc.contentValue;
-                        }
+                        columnValues.Add(dc.name, dc.contentValue);
+                    }
+                    else
+                    {
+                        columnValues[dc.name] += dc.contentValue;
                     }
                 }
+
             }
             try
             {

@@ -5,8 +5,9 @@ namespace TemplateBuilder.DTO
     public class Queries
     {
         public string queryText { get; set; }
+        public string format { get; set; }
         public int sequence { get; set; }
-        public List<SubSections> contentClasses { get; set; }
+        public List<SubSections> subSections { get; set; }
         public List<QueryPlaceholders> placeholders { get; set; }
     }
 }

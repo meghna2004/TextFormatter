@@ -90,58 +90,54 @@ namespace TemplateBuilder.Repositories
             //Change Query to retrive query placeholder.
             _tracing.Trace("Create Template Model Query: "+ templateDesId.ToString());
             string retrieveTemplateSections = string.Format(@"<fetch>
-                                                                  <entity name='vig_section'>
+                                                                <entity name='vig_query'>
+                                                                    <attribute name='vig_fetchquery' />
                                                                     <attribute name='vig_format' />
-                                                                    <attribute name='vig_sequence' />
+                                                                    <attribute name='vig_fetchsequence' />
                                                                     <filter>
-                                                                      <condition attribute='vig_textdescriptionbodyid' operator='eq' value='{0}' />
+                                                                        <condition attribute='vig_textdescriptionbodyid' operator='eq' value='{0}' />
                                                                     </filter>
-                                                                    <order attribute='vig_sequence' />
-                                                                    <link-entity name='vig_query' from='vig_sectionid' to='vig_sectionid' link-type='outer' alias='Q'>
-                                                                      <attribute name='vig_fetchquery' />
-                                                                      <attribute name='vig_fetchsequence' />
-                                                                      <order attribute='vig_fetchsequence' />
-                                                                      <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='outer' alias='DC'>
+                                                                    <order attribute='vig_fetchsequence' />                                                                  
+                                                                    <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='outer' alias='DC'>
                                                                         <attribute name='vig_name' />
                                                                         <attribute name='vig_sequence' />
                                                                         <attribute name='vig_format' />
                                                                         <order attribute='vig_sequence' />                                                                        
-                                                                      </link-entity>
-                                                                      <link-entity name='vig_queryplaceholder' from= 'vig_queryid' to= 'vig_queryid' link-type= 'outer' alias= 'QP'>
-                                                                         <attribute name= 'vig_datatype' />
-                                                                         <attribute name= 'vig_name' />
-                                                                         <attribute name= 'vig_sequence' />
-                                                                         <attribute name= 'vig_value' />
-                                                                         <attribute name= 'vig_valuefrom' />
-                                                                         <order attribute='vig_sequence' />
-                                                                      </link-entity>
                                                                     </link-entity>
-                                                                  </entity>
+                                                                    <link-entity name='vig_queryplaceholder' from= 'vig_queryid' to= 'vig_queryid' link-type= 'outer' alias= 'QP'>
+                                                                        <attribute name= 'vig_datatype' />
+                                                                        <attribute name= 'vig_name' />
+                                                                        <attribute name= 'vig_sequence' />
+                                                                        <attribute name= 'vig_value' />
+                                                                        <attribute name= 'vig_valuefrom' />
+                                                                        <order attribute='vig_sequence' />
+                                                                    </link-entity>
+                                                                </entity>
                                                               </fetch>", templateDesId.ToString());
             EntityCollection sectionsEntity = _service.RetrieveMultiple(new FetchExpression(retrieveTemplateSections));
             _tracing.Trace("Query Ran");
 
             var descriptionBody = new TextDescriptionBodies
             {
-                sectionClasses = new List<Sections>()
+                queries = new List<Queries>()
             };
             foreach (Entity entity in sectionsEntity.Entities)
             {
                 _tracing.Trace("Initilise Variables with Values retrieved");
-                var sectionSeq = entity.GetAttributeValue<int>("vig_sequence");
+                var sectionSeq = entity.GetAttributeValue<int>("vig_fetchsequence");
                 _tracing.Trace("Variable 1 "+ sectionSeq);
-                int querySeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Q.vig_fetchsequence").Value);
-                _tracing.Trace("Variable 2 "+ querySeq);
+               // int querySeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("vig_fetchsequence").Value);
+                //_tracing.Trace("Variable 2 "+ querySeq);
                 int dcSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("DC.vig_sequence").Value);
                 _tracing.Trace("Variable 3 "+ dcSeq);
                 //int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
                 //_tracing.Trace("Variable 4 "+ columnSeq);
-                var fetchQuery = entity.GetAttributeValue<AliasedValue>("Q.vig_fetchquery").Value.ToString();
+                var fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
                 _tracing.Trace("Variable 6 "+ fetchQuery);
                // var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
                // _tracing.Trace("Variable 7 "+ colLogicalName);
-                var secFormat = entity.GetAttributeValue<string>("vig_format");
-                _tracing.Trace("Variable 8 "+ secFormat);
+                var textFormat = entity.GetAttributeValue<string>("vig_format");
+                _tracing.Trace("Variable 8 "+ textFormat);
                 var dcFormat = string.Empty;
                 var dcName = entity.GetAttributeValue<AliasedValue>("DC.vig_name").Value.ToString();
                 _tracing.Trace("Variable 9 "+ dcName);
@@ -177,7 +173,7 @@ namespace TemplateBuilder.Repositories
                     dcFormat = entity.GetAttributeValue<AliasedValue>("DC.vig_format").Value.ToString();
                     _tracing.Trace("Variable 14 "+ dcFormat);
                 }
-                var section = descriptionBody.sectionClasses.FirstOrDefault(s => s.sequence == sectionSeq);
+               /* var section = descriptionBody.sectionClasses.FirstOrDefault(s => s.sequence == sectionSeq);
                 if (section == null)
                 {
                     section = new Sections
@@ -188,20 +184,21 @@ namespace TemplateBuilder.Repositories
 
                     };
                     descriptionBody.sectionClasses.Add(section);
-                }
-                var query = section.queryClasses.FirstOrDefault(q => q.sequence == querySeq);
+                }*/
+                var query = descriptionBody.queries.FirstOrDefault(q => q.sequence == sectionSeq);
                 if (query == null)
                 {
                     query = new Queries
                     {
-                        sequence = querySeq,
-                        contentClasses = new List<SubSections>(),
+                        sequence = sectionSeq,
+                        subSections = new List<SubSections>(),
                         placeholders = new List<QueryPlaceholders>(),
-                        queryText = fetchQuery
+                        queryText = fetchQuery,
+                        format = textFormat
                     };
-                    section.queryClasses.Add(query);
+                    descriptionBody.queries.Add(query);
                 }
-                var subSections = query.contentClasses.FirstOrDefault(c => c.sequence == dcSeq);
+                var subSections = query.subSections.FirstOrDefault(c => c.sequence == dcSeq);
                 if (subSections == null)
                 {
                     subSections = new SubSections
@@ -211,7 +208,7 @@ namespace TemplateBuilder.Repositories
                         name = dcName,
                         format = dcFormat
                     };
-                    query.contentClasses.Add(subSections);
+                    query.subSections.Add(subSections);
                 }
                /* subSections.content.Add(new Columns
                 {
