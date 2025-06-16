@@ -1,4 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,41 +17,76 @@ namespace TemplateBuilder.Utilities
 
     public class TokenProcessor
     {
+        private readonly IOrganizationService _service;
+        private readonly IPluginExecutionContext _context;
         private readonly ITracingService _tracing;
-        public TokenProcessor(ITracingService tracing)
+        private readonly Entity _primaryEntity;
+        private readonly string _primaryEntityName;
+        private  Entity _entity;
+        private readonly string _pattern = @"(?<!{){{([\w .]*)(:[^}]+)*}}(?!})";
+
+        public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity)
         {
-            _tracing = tracing; 
+            _service = service;
+            _context = context;
+            _tracing = tracing;
+            _entity = entity;
+            _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
+            _primaryEntityName = _primaryEntity.LogicalName;
         }
-        /// <summary>
+        /// <summary>              
+        /// _entity = _primaryEntity;
         /// Replaces curly brace values with the attribute values from the entity results
         /// </summary>
         /// <param name="fetchXML"></param>
         /// <returns></returns>
-        public string ReplaceTokens(string text, Entity entity)
+        public string ReplaceTokens(string text)
         {
             _tracing.Trace("Start of Replace Token Functions");
 
             // Accept format strings in the format
             // {attributeLogicalName} or {attribtueLogicalName:formatstring}
             // Where formatstring is a standard String.format format string e.g. {course.date:dd MMM yyyy}
-            var pattern = @"(?<!{){{([\w .]*)(:[^}]+)*}}(?!})";
-            var result = Regex.Replace(text, pattern, (match) =>
+            var result = Regex.Replace(text, _pattern, (match) =>
             {
                 _tracing.Trace("Inside var result");
                 _tracing.Trace("Text: "+text);
                 var fulltoken = match.Groups[1].Value;
+                var attributeName = string.Empty;
+                //if its Queries we are processing
+                if(_entity == null)
+                {
+                    var parts = fulltoken.Split('.');
+                    if (parts.Length > 1)
+                    {
+                        Entity er = GetEntityReferenceRecord(parts[0]);
+                        if(er != null)
+                        {
+                            _entity = er;  
+                        }
+                        attributeName = parts[1];
+                    }
+                    else
+                    {
+                        _entity = _primaryEntity;
+                        attributeName = match.Groups[1].Value.Trim();
+                    }
+                }
+                else
+                {
+                    attributeName = match.Groups[1].Value.Trim();
+                }
                 // Try get the query
                 var format = match.Groups[2].Value;
                 _tracing.Trace("Format: "+format);
-                var attributeName = match.Groups[1].Value.Trim();
                 _tracing.Trace("Token: " + attributeName);
 
                 // Check if there is an attribute value
-                if (entity.Contains(attributeName))
+                if (_entity.Contains(attributeName))
                 {
                     _tracing.Trace("Getting valuetype of token");
 
-                    var value = entity[attributeName];
+                    var value = _entity[attributeName];
                     var type = value.GetType().Name;
                     // If aliased value, get the real value
                     if (type == "AliasedValue")
@@ -76,8 +114,8 @@ namespace TemplateBuilder.Utilities
                     }
 
                     // Use String.Format to get the additional formatting options - e.g. dates and numeric formatting
-                    _tracing.Trace("Replacing the token value: "+value);
-                    if (!String.IsNullOrEmpty(format))
+                    _tracing.Trace("Replacing the token value: "+ value);
+                    if (!string.IsNullOrEmpty(format))
                     {
                         // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
                         // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
@@ -156,6 +194,40 @@ namespace TemplateBuilder.Utilities
             }
 
             return result;
+        }
+        public  Entity GetEntityReferenceRecord(string entityName)
+        {
+            RetrieveEntityRequest retrieveEntityRequest = new RetrieveEntityRequest
+            {
+                LogicalName = _primaryEntityName,
+                EntityFilters = EntityFilters.Attributes
+            };
+            RetrieveEntityResponse retrieveEntityResponse = (RetrieveEntityResponse)_service.Execute(retrieveEntityRequest);
+            EntityMetadata primaryEntityMetadata = retrieveEntityResponse.EntityMetadata;
+            _tracing.Trace("Getting primaryEntity Metadata");
+            // Step 2: Identify lookup attributes that point to the desired referenced entity
+            var lookupAttributes = primaryEntityMetadata.Attributes
+                .Where(attr => attr.AttributeType == AttributeTypeCode.Lookup || attr.AttributeType == AttributeTypeCode.Customer || attr.AttributeType == AttributeTypeCode.Owner)
+                .Cast<LookupAttributeMetadata>()
+                .Where(lookupAttr => lookupAttr.Targets.Contains(entityName))
+                .ToList();
+            ColumnSet columnSet = new ColumnSet(lookupAttributes.Select(attr => attr.LogicalName).ToArray());
+            Entity primaryEntityRecord = _service.Retrieve(_primaryEntityName, _primaryEntity.Id, columnSet);
+            _tracing.Trace("LookupAttributes Retrieved");
+            // Step 4: Iterate through the retrieved attributes to find the EntityReference
+            foreach (var attributeName in columnSet.Columns)
+            {
+                if (primaryEntityRecord.Contains(attributeName) && primaryEntityRecord[attributeName] is EntityReference entityReference)
+                {
+                    if (entityReference.LogicalName.Equals(entityName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _tracing.Trace("Getting the Entity Reference record.");
+                        return _service.Retrieve(entityName, entityReference.Id, new ColumnSet(true));
+                    }
+                }
+            }
+            _tracing.Trace("Entity Reference Record not there");
+            return null;
         }
     }
 }
