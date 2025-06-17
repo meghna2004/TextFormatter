@@ -36,7 +36,7 @@ namespace TemplateBuilder.Services
             {
                 _tracing.Trace("Inside for each for text desriptionbody in template model");
                 //retrieve the format of the whole section
-                emailBodyHtml += q.format;
+                
 
                 //foreach queries inside sections retrieve the placeholders
                // string query = queryBuilder.FormatQueryWithPlaceholders(q.queryText, q.placeholders);
@@ -44,6 +44,8 @@ namespace TemplateBuilder.Services
                 //retrieve all query placeholders and replace in query text
                 (object,string) results = ExecuteFetchAndPopulateValues(query, q.subSections, q.format);
                 q.formatValues = results.Item2;
+                emailBodyHtml += q.formatValues;
+                _tracing.Trace("After Execute Fetch and populate values: "+q.formatValues);
                 q.subSections = results.Item1 as List<SubSections>;
                 foreach (var dc in q.subSections)
                 {

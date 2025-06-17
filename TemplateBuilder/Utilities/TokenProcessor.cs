@@ -50,7 +50,7 @@ namespace TemplateBuilder.Utilities
             var result = Regex.Replace(text, _pattern, (match) =>
             {
                 _tracing.Trace("Inside var result");
-                _tracing.Trace("Text: "+text);
+                //_tracing.Trace("Text: "+text);
                 var fulltoken = match.Groups[1].Value;
                 var attributeName = string.Empty;
                 //if its Queries we are processing
@@ -120,10 +120,10 @@ namespace TemplateBuilder.Utilities
                         // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
                         // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
                         string formatPattern = "{0" + format + "}";
-                        _tracing.Trace("Format Pattern for String.Format: " + formatPattern);
+                       // _tracing.Trace("Format Pattern for String.Format: " + formatPattern);
 
                         var formattedResult = string.Format(formatPattern, value);
-                        _tracing.Trace("Formatted Result: " + formattedResult);
+                        //_tracing.Trace("Formatted Result: " + formattedResult);
                         return formattedResult;
                     }
                     string replacementValue = value?.ToString() ?? "";

@@ -70,7 +70,8 @@ namespace TemplateBuilder.Repositories
             {
                 Conditions =
                 {
-                    new ConditionExpression("vig_templateconfigurationsettingid", ConditionOperator.Equal, configID)
+                    new ConditionExpression("vig_templateconfigurationsettingid", ConditionOperator.Equal, configID),
+                    new ConditionExpression("statuscode",ConditionOperator.Equal,949800000)
                 }
             }
             };
@@ -133,11 +134,11 @@ namespace TemplateBuilder.Repositories
                 //int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
                 //_tracing.Trace("Variable 4 "+ columnSeq);
                 var fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
-                _tracing.Trace("Variable 6 "+ fetchQuery);
+                //_tracing.Trace("Variable 6 "+ fetchQuery);
                // var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
                // _tracing.Trace("Variable 7 "+ colLogicalName);
                 var textFormat = entity.GetAttributeValue<string>("vig_format");
-                _tracing.Trace("Variable 8 "+ textFormat);
+                //_tracing.Trace("Variable 8 "+ textFormat);
                 var dcFormat = string.Empty;
                 var dcName = entity.GetAttributeValue<AliasedValue>("DC.vig_name").Value.ToString();
                 _tracing.Trace("Variable 9 "+ dcName);
@@ -171,7 +172,7 @@ namespace TemplateBuilder.Repositories
                 if (entity.Contains("DC.vig_format"))
                 {
                     dcFormat = entity.GetAttributeValue<AliasedValue>("DC.vig_format").Value.ToString();
-                    _tracing.Trace("Variable 14 "+ dcFormat);
+                    //_tracing.Trace("Variable 14 "+ dcFormat);
                 }
                /* var section = descriptionBody.sectionClasses.FirstOrDefault(s => s.sequence == sectionSeq);
                 if (section == null)
