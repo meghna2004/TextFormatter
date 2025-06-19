@@ -65,7 +65,7 @@ namespace TemplateBuilder.Repositories
         {
             QueryExpression getTemplate = new QueryExpression("vig_customtemplate")
             {
-                ColumnSet = new ColumnSet("vig_customtemplateid", "vig_textdescriptionbodyid","vig_outputtype"),
+                ColumnSet = new ColumnSet(true),
                 Criteria =
             {
                 Conditions =

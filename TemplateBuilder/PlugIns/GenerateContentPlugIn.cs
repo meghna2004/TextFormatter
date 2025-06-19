@@ -53,6 +53,7 @@ namespace TemplateBuilder.PlugIns
                     var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
                     tracingService.Trace("Enum value is: " + tempType.ToString());
                     string subject = customTemplate.vig_subject;
+                    tracingService.Trace("Subject: "+subject);
                     var strategy = outputStrategy.GetOutputStrategy(tempType);
                     strategy.OutputContent(content, subject);
 
