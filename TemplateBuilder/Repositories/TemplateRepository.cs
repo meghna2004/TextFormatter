@@ -88,17 +88,21 @@ namespace TemplateBuilder.Repositories
         }
         public TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
         {
-            //Change Query to retrive query placeholder.
+            //Change Query to retrive only active records.
             _tracing.Trace("Create Template Model Query: "+ templateDesId.ToString());
             string retrieveTemplateSections = string.Format(@"<fetch>
                                                                 <entity name='vig_query'>
+                                                                    <attribute name='vig_name' />
                                                                     <attribute name='vig_fetchquery' />
                                                                     <attribute name='vig_format' />
                                                                     <attribute name='vig_fetchsequence' />
                                                                     <filter>
                                                                         <condition attribute='vig_textdescriptionbodyid' operator='eq' value='{0}' />
                                                                     </filter>
-                                                                    <order attribute='vig_fetchsequence' />                                                                  
+                                                                    <order attribute='vig_fetchsequence' />
+                                                                    <link-entity name='vig_textdescriptionbody' from='vig_textdescriptionbodyid' to= 'vig_textdescriptionbodyid' link-type='outer' alias='TBD'>
+                                                                        <attribute name='vig_textformat'/>
+                                                                    </link-entity>
                                                                     <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='outer' alias='DC'>
                                                                         <attribute name='vig_name' />
                                                                         <attribute name='vig_sequence' />
@@ -138,12 +142,19 @@ namespace TemplateBuilder.Repositories
                // var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
                // _tracing.Trace("Variable 7 "+ colLogicalName);
                 var textFormat = entity.GetAttributeValue<string>("vig_format");
+                var queryName = entity.GetAttributeValue<string>("vig_name");
+
                 //_tracing.Trace("Variable 8 "+ textFormat);
                 var dcFormat = string.Empty;
                 var dcName = entity.GetAttributeValue<AliasedValue>("DC.vig_name").Value.ToString();
                 _tracing.Trace("Variable 9 "+ dcName);
                 var qpName = string.Empty;
                 _tracing.Trace("Variable 10 "+ qpName);
+                if (entity.Contains("TBD.vig_textformat"))
+                {
+                    var tbdFormat = entity.GetAttributeValue<AliasedValue>("TBD.vig_textformat").Value.ToString();
+                    descriptionBody.structure = tbdFormat;
+                }
                 var qpValue = string.Empty;
                 int qpSeq = 0;
                 var qpDataType = new OptionSetValue();
@@ -193,9 +204,10 @@ namespace TemplateBuilder.Repositories
                     {
                         sequence = sectionSeq,
                         subSections = new List<SubSections>(),
-                        placeholders = new List<QueryPlaceholders>(),
+                        //placeholders = new List<QueryPlaceholders>(),
                         queryText = fetchQuery,
-                        format = textFormat
+                        format = textFormat,
+                        name = queryName
                     };
                     descriptionBody.queries.Add(query);
                 }
@@ -216,7 +228,7 @@ namespace TemplateBuilder.Repositories
                     sequence = columnSeq,
                     colName = colLogicalName
                 });*/
-                var qPlaceholder = query.placeholders.FirstOrDefault(p =>p.sequence==qpSeq);
+                /*var qPlaceholder = query.placeholders.FirstOrDefault(p =>p.sequence==qpSeq);
                 if(qPlaceholder == null)
                 {
                     qPlaceholder = new QueryPlaceholders
@@ -228,7 +240,7 @@ namespace TemplateBuilder.Repositories
                         valueFrom = (ValueFrom)qpGuidType.Value
                     };
                     query.placeholders.Add(qPlaceholder);
-                }
+                }*/
             }
             _tracing.Trace("Template Model Created");
             return descriptionBody;

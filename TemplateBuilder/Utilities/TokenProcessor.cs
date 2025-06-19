@@ -9,6 +9,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Workflow.Activities;
 using System.Xml.Linq;
 using TemplateBuilder.DTO;
 
@@ -23,7 +24,11 @@ namespace TemplateBuilder.Utilities
         private readonly Entity _primaryEntity;
         private readonly string _primaryEntityName;
         private  Entity _entity;
-        private readonly string _pattern = @"(?<!{){{([\w .]*)(:[^}]+)*}}(?!})";
+        private Dictionary<string, Entity> _entityDictionary;
+        private Dictionary<string, string> _sectionDictionary;
+        private bool _tbdStructure;
+
+        private readonly string _pattern = @"(?<!{){{((?:[\w]+-)?[\w .]*)(:[^}]+)*}}(?!})";
 
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity)
         {
@@ -31,8 +36,26 @@ namespace TemplateBuilder.Utilities
             _context = context;
             _tracing = tracing;
             _entity = entity;
+            /*_primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
+            _primaryEntityName = _primaryEntity.LogicalName;*/
+        }
+        public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Dictionary<string,Entity> entityDictionary, Dictionary<string,string> sectionDictionary)
+        {
+            _service = service;
+            _context = context;
+            _tracing = tracing;
+            _entityDictionary = entityDictionary;
+            _sectionDictionary = sectionDictionary;
+            _tbdStructure = true;
+        }
+        public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context)
+        {
+            _service = service;
+            _context = context;
+            _tracing = tracing;
             _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
             _primaryEntityName = _primaryEntity.LogicalName;
+            _tbdStructure = true;
         }
         /// <summary>              
         /// _entity = _primaryEntity;
@@ -40,6 +63,7 @@ namespace TemplateBuilder.Utilities
         /// </summary>
         /// <param name="fetchXML"></param>
         /// <returns></returns>
+        //Update ReplaceTokesn to take into Account the QueryDictionary.
         public string ReplaceTokens(string text)
         {
             _tracing.Trace("Start of Replace Token Functions");
@@ -53,27 +77,56 @@ namespace TemplateBuilder.Utilities
                 //_tracing.Trace("Text: "+text);
                 var fulltoken = match.Groups[1].Value;
                 var attributeName = string.Empty;
+                var queryName = string.Empty;
                 //if its Queries we are processing
-                if(_entity == null)
+                if(_tbdStructure)
                 {
-                    var parts = fulltoken.Split('.');
-                    if (parts.Length > 1)
+                    if (_entityDictionary != null)
                     {
-                        Entity er = GetEntityReferenceRecord(parts[0]);
-                        if(er != null)
+                        _tracing.Trace("Replacing for TBD structure: "+ fulltoken);
+                        var parts = fulltoken.Split('-');
+                        _tracing.Trace("Parts: "+ parts);
+                        if (parts.Length > 1)
                         {
-                            _entity = er;  
-                        }
-                        attributeName = parts[1];
+                            _tracing.Trace("Parts received");
+                            queryName = parts[0];
+                            _tracing.Trace("Query: "+ queryName);
+                            if (_entityDictionary.ContainsKey(queryName))
+                            {
+                                _tracing.Trace("Entity from querydictionary received");
+                                _entity = _entityDictionary[queryName];
+                                _tracing.Trace("Entity: "+_entity.Id);
+                            }
+                            else
+                            {
+                                _tracing.Trace("Entity not present in the Query");
+                            }
+                            attributeName = parts[1];
+                        }                        
                     }
                     else
                     {
-                        _entity = _primaryEntity;
-                        attributeName = match.Groups[1].Value.Trim();
+                        _tracing.Trace("Replacing for Query");
+                        var parts = fulltoken.Split('.');
+                        if (parts.Length > 1)
+                        {
+                            Entity er = GetEntityReferenceRecord(parts[0]);
+                            if (er != null)
+                            {
+                                _entity = er;
+                            }
+                            attributeName = parts[1];
+                        }
+                        else
+                        {
+                            _entity = _primaryEntity;
+                            attributeName = match.Groups[1].Value.Trim();
+                        }
                     }
                 }
                 else
                 {
+                    _tracing.Trace("Replacing for normal attribute in subsection");
                     attributeName = match.Groups[1].Value.Trim();
                 }
                 // Try get the query
@@ -113,6 +166,7 @@ namespace TemplateBuilder.Utilities
                             break;
                     }
 
+                    
                     // Use String.Format to get the additional formatting options - e.g. dates and numeric formatting
                     _tracing.Trace("Replacing the token value: "+ value);
                     if (!string.IsNullOrEmpty(format))
@@ -129,9 +183,19 @@ namespace TemplateBuilder.Utilities
                     string replacementValue = value?.ToString() ?? "";
                     return replacementValue;
                 }
+                else if(_sectionDictionary.ContainsKey(attributeName.Trim()))
+                {
+                    _tracing.Trace("Getting the subsection from the Queryname");
+                    return _sectionDictionary[attributeName];
+                    //get subsection from Query here.
+                }
+                else
+                {
+                    _tracing.Trace("SectionDictionary doesn't contain a key with attribute name: " + attributeName);
+                }
                 return "";
             });
-            _tracing.Trace("Result: "+result);
+            //_tracing.Trace("Result: "+result);
             return ReplaceFormatLogic(result);
         }
         private static string ReplaceFormatLogic(string result)
