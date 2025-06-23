@@ -7,6 +7,7 @@ using TemplateBuilder.OutputStrategies;
 using TemplateBuilder.Enum;
 using System;
 using System.Drawing.Imaging;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TemplateBuilder.PlugIns
 {
@@ -47,6 +48,7 @@ namespace TemplateBuilder.PlugIns
                     tracingService.Trace("Inside For each to process Templates");
                     vig_customtemplate customTemplate = template.ToEntity<vig_customtemplate>();
                     contentGenService = new ContentGeneratorService(service, context, tracingService, templateRepo, customTemplate.vig_textdescriptionbodyid.Id);
+                    vig_textdescriptionbody tbd = service.Retrieve("vig_textdescriptionbody", customTemplate.vig_textdescriptionbodyid.Id, columnSet:new ColumnSet(true)).ToEntity<vig_textdescriptionbody>();
                     string content = contentGenService.BuildContent();
                     //Get enum type
                     tracingService.Trace("Enum value is: ");
@@ -56,7 +58,8 @@ namespace TemplateBuilder.PlugIns
                     tracingService.Trace("Subject: "+subject);
                     var strategy = outputStrategy.GetOutputStrategy(tempType);
                     strategy.OutputContent(content, subject);
-
+                    tbd.vig_preview = content;
+                    service.Update(tbd);
                     /*if (customTemplate.vig_outputtype != null *//*&&
                         System.Enum.IsDefined(typeof(TemplateType), customTemplate.vig_outputtype.Value)*//*)
                     {

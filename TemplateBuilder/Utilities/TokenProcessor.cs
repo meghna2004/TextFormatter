@@ -79,6 +79,7 @@ namespace TemplateBuilder.Utilities
                 var attributeName = string.Empty;
                 var queryName = string.Empty;
                 //if its Queries we are processing
+                //the bool was added so that the entity is retrieved again and we don't have to use the same entity as last time again.
                 if(_tbdStructure)
                 {
                     if (_entityDictionary != null)
@@ -127,6 +128,7 @@ namespace TemplateBuilder.Utilities
                 else
                 {
                     _tracing.Trace("Replacing for normal attribute in subsection");
+                    //Check if there is a group by and then call the replace token function again. 
                     attributeName = match.Groups[1].Value.Trim();
                 }
                 // Try get the query
@@ -135,6 +137,7 @@ namespace TemplateBuilder.Utilities
                 _tracing.Trace("Token: " + attributeName);
 
                 // Check if there is an attribute value
+                //Need to put this into its own function. this function should take in the attribute name and a bool called repeating. If the repeating is true it should call itself again. but we also need the group by entity to 
                 if (_entity.Contains(attributeName))
                 {
                     _tracing.Trace("Getting valuetype of token");
