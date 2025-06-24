@@ -175,6 +175,8 @@
     <Compile Include="CrmPluginRegistrationAttribute.cs" />
     <Compile Include="CustomTemplates.cs" />
     <Compile Include="DTO\Columns.cs" />
+    <Compile Include="DTO\EntityDataModel.cs" />
+    <Compile Include="DTO\EntityRecords.cs" />
     <Compile Include="DTO\QueryPlaceholders.cs" />
     <Compile Include="DTO\SubSections.cs" />
     <Compile Include="DTO\TextDescriptionBodies.cs" />

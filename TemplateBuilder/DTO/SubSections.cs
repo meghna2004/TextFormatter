@@ -9,5 +9,7 @@ namespace TemplateBuilder.DTO
         public string contentValue { get; set; }        
         public string name { get; set; }
         public string format { get; set; }
+        public bool nestedGroup { get; set; }
+        public string groupBy { get; set; }
     }
 }

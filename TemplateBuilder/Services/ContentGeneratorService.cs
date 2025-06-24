@@ -2,10 +2,7 @@
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
 using TemplateBuilder.DTO;
-using TemplateBuilder.OutputStrategies;
 using TemplateBuilder.Repositories;
 using TemplateBuilder.Utilities;
 
@@ -116,8 +113,11 @@ namespace TemplateBuilder.Services
                     }
                     //replacedValues = processToken.ReplaceTokens(qFormat);
                     _tracing.Trace("EmailFormatterFunctions: Test 4 "+ _descriptionFormatInfo.structuredValue);
+                    //use for loop for (int i=0; i<=entities.Count; i++)
                     foreach (Entity entity in retrievedEntities.Entities)
                     {
+                        //Build entity to Dictionary here
+                      //  Dictionary<string, List<Dictionary<string, List<Dictionary<string, object>>>>> entityDataModel = new Dictionary<string, List<Dictionary<string, List<Dictionary<string, object>>>>>();
                         processToken = new TokenProcessor(_tracing, _service, _context, entity);
                         foreach (var dc in subSection)
                         {
@@ -126,6 +126,14 @@ namespace TemplateBuilder.Services
                             {
                                 format = dc.format;
                             }
+
+                            //if nested == true
+                                //get groupby field
+                                //if(entity.Contains[groupby])
+                                   //groupbyValue = entity["groupbyfieldname"];
+                                     
+
+
                             //get the format of each subsection
                             //_tracing.Trace("Dc Format" + format);
                             /*foreach (var c in dc.content)
@@ -157,6 +165,7 @@ namespace TemplateBuilder.Services
                             _tracing.Trace("EmailFormatterFunctions: Test 8");
                         }
                     }
+                    //do for each loop for subsections here and pass in the entitydictionary
                 }
 
                 return (subSection,replacedValues);
