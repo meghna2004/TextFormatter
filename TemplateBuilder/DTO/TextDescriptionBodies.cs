@@ -4,6 +4,8 @@ namespace TemplateBuilder.DTO
 {
     public class TextDescriptionBodies
     {
-        public List<Sections> sectionClasses { get; set; }
+        public List<Queries> queries { get; set; }
+        public string structure { get; set; }
+        public string structuredValue { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿/*using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
@@ -31,19 +31,30 @@ namespace TemplateBuilder.Utilities
             _tracing.Trace("Create TokenProcessor");
             //Need to use tokens here as well.
             //Need a different token processor function for this. 
-            TokenProcessor processor = new TokenProcessor(_tracing);
+            TokenProcessor processor = new TokenProcessor(_tracing, _service, _context, _primaryEntity);
             string replacedQuery = string.Empty;
-            foreach (var qp in placeholders)
+            //call token processor here.
+            replacedQuery = processor.ReplaceTokens(fetchXML);
+      *//*      foreach (var qp in placeholders)
             {
                 _tracing.Trace("Inside Query placeholders");
 
                 if (qp.value == null || qp.value == string.Empty)
                 {
-                   replacedQuery= processor.ReplaceTokens(fetchXML,_primaryEntity);                   
+                    if(qp.valueFrom == ValueFrom.PrimaryEntity)
+                    {
+                        processor = new TokenProcessor(_tracing, _primaryEntity);
+                        replacedQuery = processor.ReplaceTokens(fetchXML);
+                    }
+                    else
+                    {
+                        
+                    }
                 }
-            }
+            }*//*
             _tracing.Trace("TokenProcessor Successfull");
             return replacedQuery;
         }
     } 
 }
+*/

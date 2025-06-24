@@ -7,6 +7,7 @@ using TemplateBuilder.OutputStrategies;
 using TemplateBuilder.Enum;
 using System;
 using System.Drawing.Imaging;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TemplateBuilder.PlugIns
 {
@@ -19,8 +20,8 @@ namespace TemplateBuilder.PlugIns
             var tracingService = localcontext.TracingService;
             PluginConfigService pluginConfigService = new PluginConfigService(service, localcontext);
             TemplateRepository templateRepo = new TemplateRepository(service,context,tracingService,pluginConfigService);
-            var outputStrategy = new OutputStrategyFactory();
-            var contentGenService = new ContentGeneratorService(service, context,tracingService,templateRepo);
+            OutputStrategyFactory outputStrategy = new OutputStrategyFactory(context,service);
+            ContentGeneratorService contentGenService = null;
             //Retrieve config table
             //retrive all active and ready templates
             //execute
@@ -46,14 +47,19 @@ namespace TemplateBuilder.PlugIns
                 {
                     tracingService.Trace("Inside For each to process Templates");
                     vig_customtemplate customTemplate = template.ToEntity<vig_customtemplate>();
-                    string content = contentGenService.BuildContent(customTemplate.vig_textdescriptionbodyid.Id);
+                    contentGenService = new ContentGeneratorService(service, context, tracingService, templateRepo, customTemplate.vig_textdescriptionbodyid.Id);
+                    vig_textdescriptionbody tbd = service.Retrieve("vig_textdescriptionbody", customTemplate.vig_textdescriptionbodyid.Id, columnSet:new ColumnSet(true)).ToEntity<vig_textdescriptionbody>();
+                    string content = contentGenService.BuildContent();
                     //Get enum type
                     tracingService.Trace("Enum value is: ");
                     var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
                     tracingService.Trace("Enum value is: " + tempType.ToString());
+                    string subject = customTemplate.vig_subject;
+                    tracingService.Trace("Subject: "+subject);
                     var strategy = outputStrategy.GetOutputStrategy(tempType);
-                    strategy.OutputContent(content, context, service);
-
+                    strategy.OutputContent(content, subject);
+                    tbd.vig_preview = content;
+                    service.Update(tbd);
                     /*if (customTemplate.vig_outputtype != null *//*&&
                         System.Enum.IsDefined(typeof(TemplateType), customTemplate.vig_outputtype.Value)*//*)
                     {

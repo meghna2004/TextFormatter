@@ -1,4 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿/*using Microsoft.Xrm.Sdk;
 using TemplateBuilder.Enum;
 
 namespace TemplateBuilder.DTO
@@ -12,3 +12,4 @@ namespace TemplateBuilder.DTO
         public int sequence { get; set; }
     }
 }
+*/
