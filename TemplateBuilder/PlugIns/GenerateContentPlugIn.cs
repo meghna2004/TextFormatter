@@ -22,9 +22,7 @@ namespace TemplateBuilder.PlugIns
             TemplateRepository templateRepo = new TemplateRepository(service,context,tracingService,pluginConfigService);
             OutputStrategyFactory outputStrategy = new OutputStrategyFactory(context,service);
             ContentGeneratorService contentGenService = null;
-            //Retrieve config table
-            //retrive all active and ready templates
-            //execute
+
             var messageName = context.MessageName;
             tracingService.Trace("Message Name: "+messageName);
             var entityName = context.PrimaryEntityName;
@@ -60,36 +58,8 @@ namespace TemplateBuilder.PlugIns
                     strategy.OutputContent(content, subject);
                     tbd.vig_preview = content;
                     service.Update(tbd);
-                    /*if (customTemplate.vig_outputtype != null *//*&&
-                        System.Enum.IsDefined(typeof(TemplateType), customTemplate.vig_outputtype.Value)*//*)
-                    {
-                        var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
-                        Console.WriteLine("Enum value is: " + tempType);
-
-                        var strategy = outputStrategyFactory.GetOutputStrategy(tempType);
-                        strategy.OutputContent(content, context, service);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid choice value.");
-                    }*/
-
-
-
                 }
             }
-           /* string fetchTemplateConfig = string.Format(@"");
-            EntityCollection configsRetrieved = service.RetrieveMultiple(new FetchExpression(fetchTemplateConfig));
-            foreach (Entity config in configsRetrieved.Entities)
-            {
-                string fetchTemplates = string.Format(@"");
-                EntityCollection templatesRetrieved = service.RetrieveMultiple(new FetchExpression(fetchTemplates));
-                foreach (Entity template in templatesRetrieved.Entities)
-                {
-                    CustomTemplates customTemplates = new CustomTemplates();
-
-                }
-            }*/
         }
     }
 }

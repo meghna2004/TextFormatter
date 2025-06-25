@@ -33,38 +33,25 @@ namespace TemplateBuilder.Services
             _tracing.Trace("Template Model Created");
             Dictionary<string, string> columnValues = new Dictionary<string, string>();
             Dictionary<string, string> sectionValues = new Dictionary<string, string>();
-            //string emailBodyHtml1 = string.Empty;
             string emailDes = string.Empty;
             foreach (var q in _descriptionFormatInfo.queries)
             {
                 _tracing.Trace("Inside for each for text desriptionbody in template model");
                 string query = processor.ReplaceTokens(q.queryText);
-                //retrieve all query placeholders and replace in query text
                 _tracing.Trace("Query: " + query);
-                (object,string) results = ExecuteFetchAndPopulateValues(q.name,query, q.subSections, q.format);
-                q.formatValues = results.Item2;
-               // emailBodyHtml1 += q.formatValues;  
-                _tracing.Trace("After Execute Fetch and populate values: "+q.formatValues);
-                q.subSections = results.Item1 as List<SubSections>;
-                foreach (var dc in q.subSections)
+                object results = ExecuteFetchAndPopulateValues(q.name,query, q.repeatingGroups);
+                q.repeatingGroups = results as List<RepeatingGroups>;
+                foreach (var rg in q.repeatingGroups)
                 {
-                    if (!columnValues.ContainsKey(dc.name))
+                    if (!columnValues.ContainsKey(rg.name))
                     {
-                        columnValues.Add(dc.name, dc.contentValue);
+                        columnValues.Add(rg.name, rg.contentValue);
                     }
                     else
                     {
-                        columnValues[dc.name] += dc.contentValue;
+                        columnValues[rg.name] += rg.contentValue;
                     }
                 }
-                /*if (!sectionValues.ContainsKey(q.name))
-                {
-                    sectionValues.Add(q.name, q.formatValues);
-                }
-                else
-                {
-                    sectionValues[q.name] = q.formatValues;
-                }*/
             }
             foreach(var e in _queryDictionary)
             {
@@ -76,15 +63,6 @@ namespace TemplateBuilder.Services
 
             try
             {
-                //this is to replace the placeholders that are in the same line. such as in a table row.
-                /*foreach (var column in columnValues)
-                {
-                    emailBodyHtml1 = emailBodyHtml1.Replace(column.Key, column.Value);
-                }*/
-               /* foreach(var section in sectionValues)
-                {
-                    emailDes = _descriptionFormatInfo.structuredValue.Replace(section.Key, section.Value);
-                }*/
                 return _descriptionFormatInfo.structuredValue;
             }
             catch
@@ -92,7 +70,7 @@ namespace TemplateBuilder.Services
                 throw new InvalidPluginExecutionException("Placeholder does not match the name of value to be inserted");
             }
         }
-        public (object,string) ExecuteFetchAndPopulateValues(string queryName,string fetchXml, List<SubSections> subSection,string qFormat)
+        public object ExecuteFetchAndPopulateValues(string queryName,string fetchXml, List<RepeatingGroups> repeatingGroups)
         {
             XmlHelper xmlHelper = new XmlHelper();
             _tracing.Trace("Format the query using XML Helper");
@@ -103,7 +81,6 @@ namespace TemplateBuilder.Services
                 EntityCollection retrievedEntities = _service.RetrieveMultiple(new FetchExpression(formattedQuery));
                 _tracing.Trace("Records Retrieved from Query");
                 string format = string.Empty;
-                string replacedValues = string.Empty;
                 if (retrievedEntities.Entities.Count > 0)
                 {
                     _tracing.Trace("Entities count more than 0");
@@ -114,52 +91,23 @@ namespace TemplateBuilder.Services
                         _tracing.Trace("Add query and entity to dictionary: "+ queryName+ "ID: "+ retrievedEntities.Entities[0].Id);
                         _queryDictionary.Add(queryName, retrievedEntities.Entities[0]);
                     }
-                    //replacedValues = processToken.ReplaceTokens(qFormat);
                     _tracing.Trace("EmailFormatterFunctions: Test 4 "+ _descriptionFormatInfo.structuredValue);
                     foreach (Entity entity in retrievedEntities.Entities)
                     {
                         processToken = new TokenProcessor(_tracing, _service, _context, entity);
-                        foreach (var dc in subSection)
+                        foreach (var dc in repeatingGroups)
                         {
-                            //_tracing.Trace("EmailFormatterFunctions: Test 6");
                             if (!string.IsNullOrEmpty(dc.format))
                             {
                                 format = dc.format;
                             }
-                            //get the format of each subsection
-                            //_tracing.Trace("Dc Format" + format);
-                            /*foreach (var c in dc.content)
-                            {
-                               */ //call tokenprocessor here
-                                  //_tracing.Trace("EmailFormatterFunctions: Test 7" + c.colName);                      
-                                  //format = processToken.ReplaceTokens(format);
-
-                            //get the value of the column name for each column inside the sub section
-                            /*if (entity.Contains(c.colName))
-                            {
-                                //replace the text/format with the placeholder (colName) with the actual value
-                                if (!string.IsNullOrEmpty(format))
-                                {
-                                    format = format.Replace(c.colName, (entity[c.colName].ToString()));
-                                }
-                                else
-                                {
-                                    format += dc.defaultFormat.Replace("placeholder", entity[c.colName].ToString());
-                                }
-                            }
-                            else
-                            {
-                                throw new InvalidPluginExecutionException("Column not present in query");
-                            }*/
-                            //  }
-                            //populate the text of the subsection with the replaced values in.
                             dc.contentValue += processToken.ReplaceTokens(format);
                             _tracing.Trace("EmailFormatterFunctions: Test 8");
                         }
                     }
                 }
 
-                return (subSection,replacedValues);
+                return repeatingGroups;
             }
             catch (Exception ex)
             {

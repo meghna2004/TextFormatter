@@ -5,13 +5,7 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Workflow.Activities;
-using System.Xml.Linq;
-using TemplateBuilder.DTO;
 
 namespace TemplateBuilder.Utilities
 {
@@ -36,8 +30,6 @@ namespace TemplateBuilder.Utilities
             _context = context;
             _tracing = tracing;
             _entity = entity;
-            /*_primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
-            _primaryEntityName = _primaryEntity.LogicalName;*/
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Dictionary<string,Entity> entityDictionary, Dictionary<string,string> sectionDictionary)
         {
@@ -78,8 +70,6 @@ namespace TemplateBuilder.Utilities
                 var fulltoken = match.Groups[1].Value;
                 var attributeName = string.Empty;
                 var queryName = string.Empty;
-                //if its Queries we are processing
-                //the bool was added so that the entity is retrieved again and we don't have to use the same entity as last time again.
                 if(_tbdStructure)
                 {
                     if (_entityDictionary != null)
@@ -190,7 +180,6 @@ namespace TemplateBuilder.Utilities
                 {
                     _tracing.Trace("Getting the subsection from the Queryname");
                     return _sectionDictionary[attributeName];
-                    //get subsection from Query here.
                 }
                 else
                 {
@@ -198,7 +187,6 @@ namespace TemplateBuilder.Utilities
                 }
                 return "";
             });
-            //_tracing.Trace("Result: "+result);
             return ReplaceFormatLogic(result);
         }
         private static string ReplaceFormatLogic(string result)
@@ -262,7 +250,7 @@ namespace TemplateBuilder.Utilities
 
             return result;
         }
-        public  Entity GetEntityReferenceRecord(string entityName)
+        public virtual Entity GetEntityReferenceRecord(string entityName)
         {
             RetrieveEntityRequest retrieveEntityRequest = new RetrieveEntityRequest
             {
