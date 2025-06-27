@@ -24,8 +24,7 @@ namespace TemplateBuilder.Services.Tests
             var mockContext = new Mock<IPluginExecutionContext>();
             var mockTracing = new Mock<ITracingService>();
             var mockTemplateRepo = new Mock<TemplateRepository>();
-            //var mockLocalContext = new Mock<LocalPluginContext>();
-
+            Guid descriptionID = Guid.NewGuid();
             var templateModel = new TextDescriptionBodies
             {
                 structure = "Hello {{sampleQuery-name}}. Here is your order number: {{sampleQuery-co.ordernumber}} Here are the order details: {{sampleQuery-sampleRepeatingGroup}}",
@@ -34,7 +33,20 @@ namespace TemplateBuilder.Services.Tests
                     new Queries
                     {
                         name = "sampleQuery",
-                        queryText = "",
+                        queryText = @"<fetch>
+                                        <entity name='account'>
+                                        <attribute name='name' />
+                                        <link-entity name='order' from='orderid' to='orderid' link-type='outer' alias='co'>
+                                            <attribute name='ordernumber' />
+                                            <link-entity name='product' from='productid' to='productid' link-type='outer' alias='prod'>
+                                                <attribute name='orderdate' />
+                                                <attribute name='productName' />
+                                                <attribute name='price' />
+                                                <attribute name='ammount' />
+                                            </link-entity>
+                                        </link-entity>
+                                        </entity>
+                                    </fetch>",
                         sequence = 1,
                         repeatingGroups = new List<RepeatingGroups>
                         {
@@ -47,6 +59,16 @@ namespace TemplateBuilder.Services.Tests
                     }
                 }
             };
+            mockTemplateRepo.Setup(tr=>tr.CreateTemplateModel(descriptionID)).Returns(templateModel);
+            Entity testEntity = new Entity("account",Guid.NewGuid());
+            testEntity["name"] = "Meghna";
+            testEntity["co.ordernumber"] = "CO-754112";
+           // testEntity["prod.orderdate"] = new DateTime(1,1,1,)
+            testEntity["name"] = "Meghna";
+            testEntity["name"] = "Meghna";
+            testEntity["name"] = "Meghna";
+            //setup tokenprocessor
+            //setup
             //Act
 
             //Assert

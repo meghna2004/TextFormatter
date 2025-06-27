@@ -189,7 +189,7 @@ namespace TemplateBuilder.Utilities
             });
             return ReplaceFormatLogic(result);
         }
-        private static string ReplaceFormatLogic(string result)
+        public string ReplaceFormatLogic(string result)
         {
             // Add additional template logic 
             // {{delimeter:, }} - Will only add the string ", " if there is a value before and after

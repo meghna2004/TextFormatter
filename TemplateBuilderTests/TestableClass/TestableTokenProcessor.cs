@@ -8,11 +8,11 @@ using TemplateBuilder.Utilities;
 
 namespace TemplateBuilderTests.TestableClass
 {
-    public class TestableClass1 : TokenProcessor
+    public class TestableTokenProcessor : TokenProcessor
     {
         private readonly Entity _fakeEntityReferenceRecord;
 
-        public TestableClass1(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity fakeReference)
+        public TestableTokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity fakeReference)
             : base(tracing, service, context)
         {
             _fakeEntityReferenceRecord = fakeReference;
