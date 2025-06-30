@@ -86,7 +86,7 @@ namespace TemplateBuilder.Repositories
             _tracing.Trace("---------------------------");
             return null;
         }
-        public TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
+        public virtual TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
         {
             //Change Query to retrive only active records.
             _tracing.Trace("Create Template Model Query: " + templateDesId.ToString());
@@ -123,35 +123,46 @@ namespace TemplateBuilder.Repositories
             foreach (Entity entity in sectionsEntity.Entities)
             {
                 _tracing.Trace("Initilise Variables with Values retrieved");
-                var sectionSeq = entity.GetAttributeValue<int>("vig_fetchsequence");
-                _tracing.Trace("Variable 1 " + sectionSeq);
-
-                var fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
-
-                var textFormat = entity.GetAttributeValue<string>("vig_format");
-                var queryName = entity.GetAttributeValue<string>("vig_name");
+                var fetchSequence = 0;
+                var fetchQuery = string.Empty;
+                var queryName = string.Empty;
+                var rgName = string.Empty;
                 var rgFormat = string.Empty;
-                var rgName = entity.GetAttributeValue<AliasedValue>("RG.vig_name").Value.ToString();
-                _tracing.Trace("Variable 9 " + rgName);
-                var qpName = string.Empty;
-                _tracing.Trace("Variable 10 " + qpName);
+
+                if (entity.Contains("vig_fetchsequence"))
+                {
+                    fetchSequence = entity.GetAttributeValue<int>("vig_fetchsequence");
+                    _tracing.Trace("Variable 1 " + fetchSequence);
+                }
+                if (entity.Contains("vig_fetchquery"))
+                {
+                    fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
+                }
+                if (entity.Contains("vig_name"))
+                {
+                    queryName = entity.GetAttributeValue<string>("vig_name");
+                }
+                if (entity.Contains("RG.vig_name"))
+                {
+                     rgName = entity.GetAttributeValue<AliasedValue>("RG.vig_name").Value.ToString();
+                    _tracing.Trace("Variable 9 " + rgName);
+                }
                 if (entity.Contains("TBD.vig_textformat"))
                 {
                     var tbdFormat = entity.GetAttributeValue<AliasedValue>("TBD.vig_textformat").Value.ToString();
                     descriptionBody.structure = tbdFormat;
                 }
-
-                _tracing.Trace("All Variables Initialised");
                 if (entity.Contains("RG.vig_format"))
                 {
                     rgFormat = entity.GetAttributeValue<AliasedValue>("RG.vig_format").Value.ToString();
                 }
-                var query = descriptionBody.queries.FirstOrDefault(q => q.sequence == sectionSeq);
+                _tracing.Trace("All Variables Initialised");
+                var query = descriptionBody.queries.FirstOrDefault(q => q.sequence == fetchSequence);
                 if (query == null)
                 {
                     query = new Queries
                     {
-                        sequence = sectionSeq,
+                        sequence = fetchSequence,
                         repeatingGroups = new List<RepeatingGroups>(),
                         queryText = fetchQuery,
                         name = queryName

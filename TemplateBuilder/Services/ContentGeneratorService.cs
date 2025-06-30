@@ -32,7 +32,6 @@ namespace TemplateBuilder.Services
             TokenProcessor processor = new TokenProcessor(_tracing, _service, _context);
             _tracing.Trace("Template Model Created");
             Dictionary<string, string> columnValues = new Dictionary<string, string>();
-            Dictionary<string, string> sectionValues = new Dictionary<string, string>();
             string emailDes = string.Empty;
             foreach (var q in _descriptionFormatInfo.queries)
             {

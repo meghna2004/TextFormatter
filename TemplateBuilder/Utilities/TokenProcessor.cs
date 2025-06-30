@@ -20,7 +20,7 @@ namespace TemplateBuilder.Utilities
         private  Entity _entity;
         private Dictionary<string, Entity> _entityDictionary;
         private Dictionary<string, string> _sectionDictionary;
-        private bool _tbdStructure;
+        private bool _tdbOrQuery;
 
         private readonly string _pattern = @"(?<!{){{((?:[\w]+-)?[\w .]*)(:[^}]+)*}}(?!})";
 
@@ -38,7 +38,7 @@ namespace TemplateBuilder.Utilities
             _tracing = tracing;
             _entityDictionary = entityDictionary;
             _sectionDictionary = sectionDictionary;
-            _tbdStructure = true;
+            _tdbOrQuery = true;
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context)
         {
@@ -47,7 +47,7 @@ namespace TemplateBuilder.Utilities
             _tracing = tracing;
             _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
             _primaryEntityName = _primaryEntity.LogicalName;
-            _tbdStructure = true;
+            _tdbOrQuery = true;
         }
         /// <summary>              
         /// _entity = _primaryEntity;
@@ -70,7 +70,7 @@ namespace TemplateBuilder.Utilities
                 var fulltoken = match.Groups[1].Value;
                 var attributeName = string.Empty;
                 var queryName = string.Empty;
-                if(_tbdStructure)
+                if(_tdbOrQuery)
                 {
                     if (_entityDictionary != null)
                     {
@@ -243,8 +243,6 @@ namespace TemplateBuilder.Utilities
                             result = after.Substring(0, after.IndexOf('|'));
                         break;
                 }
-
-
                 match = Regex.Match(result, pattern);
             }
 

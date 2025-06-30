@@ -142,9 +142,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\TemplateRepositoryTests.cs" />
     <Compile Include="Services\ContentGeneratorServiceTests.cs" />
-    <Compile Include="TestableClass\TestableContentGeneratorService.cs" />
     <Compile Include="TestableClass\TestableTokenProcessor.cs" />
     <Compile Include="Utilities\TokenProcessorTests.cs" />
+    <Compile Include="Utilities\XmlHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TemplateBuilder\TemplateBuilder.csproj">

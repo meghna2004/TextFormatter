@@ -146,16 +146,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Common\PluginBase.cs" />
     <Compile Include="CrmPluginRegistrationAttribute.cs" />
     <Compile Include="DTO\RepeatingGroups.cs" />
     <Compile Include="DTO\TextDescriptionBodies.cs" />
     <Compile Include="DTO\Queries.cs" />
     <Compile Include="EarlyBoundTypes.cs" />
-    <Compile Include="Enum\DataType.cs" />
     <Compile Include="Enum\TemplateType.cs" />
-    <Compile Include="Enum\ValueFrom.cs" />
     <Compile Include="OutputStrategies\DocumentOutputStrategy.cs" />
     <Compile Include="OutputStrategies\EmailOutputStrategy.cs" />
     <Compile Include="OutputStrategies\IOutputStrategy.cs" />
@@ -190,7 +187,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\" />
-    <Folder Include="TestCases\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\coretools\CrmSvcUtil.exe" />
