@@ -40,15 +40,18 @@ namespace TemplateBuilder.Services
                 _tracing.Trace("Query: " + query);
                 object results = ExecuteFetchAndPopulateValues(q.name,query, q.repeatingGroups);
                 q.repeatingGroups = results as List<RepeatingGroups>;
-                foreach (var rg in q.repeatingGroups)
+                if(q.repeatingGroups != null)
                 {
-                    if (!columnValues.ContainsKey(rg.name))
+                    foreach (var rg in q.repeatingGroups)
                     {
-                        columnValues.Add(rg.name, rg.contentValue);
-                    }
-                    else
-                    {
-                        columnValues[rg.name] += rg.contentValue;
+                        if (!columnValues.ContainsKey(rg.name))
+                        {
+                            columnValues.Add(rg.name, rg.contentValue);
+                        }
+                        else
+                        {
+                            columnValues[rg.name] += rg.contentValue;
+                        }
                     }
                 }
             }
@@ -94,14 +97,17 @@ namespace TemplateBuilder.Services
                     foreach (Entity entity in retrievedEntities.Entities)
                     {
                         processToken = new TokenProcessor(_tracing, _service, _context, entity);
-                        foreach (var dc in repeatingGroups)
+                        if(repeatingGroups!=null)
                         {
-                            if (!string.IsNullOrEmpty(dc.format))
+                            foreach (var dc in repeatingGroups)
                             {
-                                format = dc.format;
+                                if (!string.IsNullOrEmpty(dc.format))
+                                {
+                                    format = dc.format;
+                                }
+                                dc.contentValue += processToken.ReplaceTokens(format);
+                                _tracing.Trace("EmailFormatterFunctions: Test 8");
                             }
-                            dc.contentValue += processToken.ReplaceTokens(format);
-                            _tracing.Trace("EmailFormatterFunctions: Test 8");
                         }
                     }
                 }

@@ -222,7 +222,11 @@ namespace TemplateBuilder.Services.Tests
             testEntity2["firstname"] = "Jane";
 
             var entityCollection = new EntityCollection(new List<Entity>() {testEntity});
-            _mockService.Setup(s => s.RetrieveMultiple(It.IsAny<FetchExpression>())).Returns(entityCollection);
+            var entityCollection2 = new EntityCollection(new List<Entity>() { testEntity2 });
+            _mockService.SetupSequence(s => s.RetrieveMultiple(It.IsAny<FetchExpression>()))
+            .Returns(entityCollection)   // First call → Alice
+            .Returns(entityCollection2); // Second call → Jane
+
             _mockService.Setup(s => s.Retrieve("account", primaryEntity.Id, It.IsAny<ColumnSet>())).Returns(primaryEntity);
             _mockContext.Setup(c => c.PrimaryEntityName).Returns("account");
             _mockContext.Setup(c => c.PrimaryEntityId).Returns(primaryEntity.Id);
@@ -233,7 +237,7 @@ namespace TemplateBuilder.Services.Tests
                    _mockTracing.Object,
                    _mockTemplateRepo.Object,
                    descriptionID);
-            var expected = "Hello Alice";
+            var expected = "Hello Alice and Jane";
 
             //Act
             var buildContentResult = _mockcontentGeneratorService.BuildContent();
