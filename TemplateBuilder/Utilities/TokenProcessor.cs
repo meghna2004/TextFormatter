@@ -128,55 +128,59 @@ namespace TemplateBuilder.Utilities
 
                 // Check if there is an attribute value
                 //Need to put this into its own function. this function should take in the attribute name and a bool called repeating. If the repeating is true it should call itself again. but we also need the group by entity to 
-                if (_entity.Contains(attributeName))
+                if (_entity != null)
                 {
-                    _tracing.Trace("Getting valuetype of token");
-
-                    var value = _entity[attributeName];
-                    var type = value.GetType().Name;
-                    // If aliased value, get the real value
-                    if (type == "AliasedValue")
+                    if (_entity.Contains(attributeName))
                     {
-                        value = (value as AliasedValue).Value;
-                        type = value.GetType().Name;
-                    }
+                        _tracing.Trace("Getting valuetype of token");
 
-                    switch (type)
-                    {
-                        case "Decimal":
-                        case "Integer":
-                        case "DateTime":
-                            // No need to change the value
-                            break;
-                        case "EntityReference":
-                            value = (value as EntityReference).Id;
-                            break;
-                        case "Guid":
-                            value = (Guid)value; 
-                            break;
-                        default:
-                            value = value.ToString();
-                            break;
-                    }
+                        var value = _entity[attributeName];
+                        var type = value.GetType().Name;
+                        // If aliased value, get the real value
+                        if (type == "AliasedValue")
+                        {
+                            value = (value as AliasedValue).Value;
+                            type = value.GetType().Name;
+                        }
 
-                    
-                    // Use String.Format to get the additional formatting options - e.g. dates and numeric formatting
-                    _tracing.Trace("Replacing the token value: "+ value);
-                    if (!string.IsNullOrEmpty(format))
-                    {
-                        // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
-                        // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
-                        string formatPattern = "{0" + format + "}";
-                       // _tracing.Trace("Format Pattern for String.Format: " + formatPattern);
+                        switch (type)
+                        {
+                            case "Decimal":
+                            case "Integer":
+                            case "DateTime":
+                                // No need to change the value
+                                break;
+                            case "EntityReference":
+                                value = (value as EntityReference).Id;
+                                break;
+                            case "Guid":
+                                value = (Guid)value;
+                                break;
+                            default:
+                                value = value.ToString();
+                                break;
+                        }
 
-                        var formattedResult = string.Format(formatPattern, value);
-                        //_tracing.Trace("Formatted Result: " + formattedResult);
-                        return formattedResult;
+
+                        // Use String.Format to get the additional formatting options - e.g. dates and numeric formatting
+                        _tracing.Trace("Replacing the token value: " + value);
+                        if (!string.IsNullOrEmpty(format))
+                        {
+                            // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
+                            // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
+                            string formatPattern = "{0" + format + "}";
+                            // _tracing.Trace("Format Pattern for String.Format: " + formatPattern);
+
+                            var formattedResult = string.Format(formatPattern, value);
+                            //_tracing.Trace("Formatted Result: " + formattedResult);
+                            return formattedResult;
+                        }
+                        string replacementValue = value?.ToString() ?? "";
+                        return replacementValue;
                     }
-                    string replacementValue = value?.ToString() ?? "";
-                    return replacementValue;
                 }
-                else if(_sectionDictionary.ContainsKey(attributeName.Trim()))
+
+                if(_sectionDictionary.ContainsKey(attributeName.Trim()))
                 {
                     _tracing.Trace("Getting the subsection from the Queryname");
                     return _sectionDictionary[attributeName];
