@@ -6,6 +6,7 @@ using TextFormatter;
 
 namespace TemplateBuilder.Services
 {
+    //Service class containing methods required to register a pluginstep on dataverse.
     public class PluginConfigService: PluginBase
     {
         private readonly IOrganizationService _service;

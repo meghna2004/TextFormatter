@@ -7,12 +7,10 @@ namespace TemplateBuilder.OutputStrategies
 {
     public class OutputStrategyFactory
     {
-        private  Entity _primaryEntity;
         private readonly IPluginExecutionContext _context;
         private readonly IOrganizationService _service;
         public OutputStrategyFactory(IPluginExecutionContext context, IOrganizationService service)
         {
-            _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
             _context = context;
             _service = service;
         }

@@ -5,13 +5,7 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Workflow.Activities;
-using System.Xml.Linq;
-using TemplateBuilder.DTO;
 
 namespace TemplateBuilder.Utilities
 {
@@ -26,7 +20,7 @@ namespace TemplateBuilder.Utilities
         private  Entity _entity;
         private Dictionary<string, Entity> _entityDictionary;
         private Dictionary<string, string> _sectionDictionary;
-        private bool _tbdStructure;
+        private bool _tdbOrQuery;
 
         private readonly string _pattern = @"(?<!{){{((?:[\w]+-)?[\w .]*)(:[^}]+)*}}(?!})";
 
@@ -36,8 +30,6 @@ namespace TemplateBuilder.Utilities
             _context = context;
             _tracing = tracing;
             _entity = entity;
-            /*_primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
-            _primaryEntityName = _primaryEntity.LogicalName;*/
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Dictionary<string,Entity> entityDictionary, Dictionary<string,string> sectionDictionary)
         {
@@ -46,7 +38,7 @@ namespace TemplateBuilder.Utilities
             _tracing = tracing;
             _entityDictionary = entityDictionary;
             _sectionDictionary = sectionDictionary;
-            _tbdStructure = true;
+            _tdbOrQuery = true;
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context)
         {
@@ -55,7 +47,7 @@ namespace TemplateBuilder.Utilities
             _tracing = tracing;
             _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
             _primaryEntityName = _primaryEntity.LogicalName;
-            _tbdStructure = true;
+            _tdbOrQuery = true;
         }
         /// <summary>              
         /// _entity = _primaryEntity;
@@ -63,14 +55,13 @@ namespace TemplateBuilder.Utilities
         /// </summary>
         /// <param name="fetchXML"></param>
         /// <returns></returns>
-        //Update ReplaceTokesn to take into Account the QueryDictionary.
         public string ReplaceTokens(string text)
         {
             _tracing.Trace("Start of Replace Token Functions");
 
             // Accept format strings in the format
-            // {attributeLogicalName} or {attribtueLogicalName:formatstring}
-            // Where formatstring is a standard String.format format string e.g. {course.date:dd MMM yyyy}
+            // {{attributeLogicalName}} or {{attribtueLogicalName:formatstring}} or {{queryName-repeatingGroupname}} or {{queryName-attributeLogicalName}}
+            // Where formatstring is a standard String.format format string e.g. {{course.date:dd MMM yyyy}}
             var result = Regex.Replace(text, _pattern, (match) =>
             {
                 _tracing.Trace("Inside var result");
@@ -78,9 +69,7 @@ namespace TemplateBuilder.Utilities
                 var fulltoken = match.Groups[1].Value;
                 var attributeName = string.Empty;
                 var queryName = string.Empty;
-                //if its Queries we are processing
-                //the bool was added so that the entity is retrieved again and we don't have to use the same entity as last time again.
-                if(_tbdStructure)
+                if(_tdbOrQuery)
                 {
                     if (_entityDictionary != null)
                     {
@@ -128,7 +117,6 @@ namespace TemplateBuilder.Utilities
                 else
                 {
                     _tracing.Trace("Replacing for normal attribute in subsection");
-                    //Check if there is a group by and then call the replace token function again. 
                     attributeName = match.Groups[1].Value.Trim();
                 }
                 // Try get the query
@@ -137,60 +125,59 @@ namespace TemplateBuilder.Utilities
                 _tracing.Trace("Token: " + attributeName);
 
                 // Check if there is an attribute value
-                //Need to put this into its own function. this function should take in the attribute name and a bool called repeating. If the repeating is true it should call itself again. but we also need the group by entity to 
-                if (_entity.Contains(attributeName))
+                if (_entity != null)
                 {
-                    _tracing.Trace("Getting valuetype of token");
-
-                    var value = _entity[attributeName];
-                    var type = value.GetType().Name;
-                    // If aliased value, get the real value
-                    if (type == "AliasedValue")
+                    if (_entity.Contains(attributeName))
                     {
-                        value = (value as AliasedValue).Value;
-                        type = value.GetType().Name;
-                    }
+                        _tracing.Trace("Getting valuetype of token");
 
-                    switch (type)
-                    {
-                        case "Decimal":
-                        case "Integer":
-                        case "DateTime":
-                            // No need to change the value
-                            break;
-                        case "EntityReference":
-                            value = (value as EntityReference).Id;
-                            break;
-                        case "Guid":
-                            value = (Guid)value; 
-                            break;
-                        default:
-                            value = value.ToString();
-                            break;
-                    }
+                        var value = _entity[attributeName];
+                        var type = value.GetType().Name;
+                        // If aliased value, get the real value
+                        if (type == "AliasedValue")
+                        {
+                            value = (value as AliasedValue).Value;
+                            type = value.GetType().Name;
+                        }
 
-                    
-                    // Use String.Format to get the additional formatting options - e.g. dates and numeric formatting
-                    _tracing.Trace("Replacing the token value: "+ value);
-                    if (!string.IsNullOrEmpty(format))
-                    {
-                        // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
-                        // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
-                        string formatPattern = "{0" + format + "}";
-                       // _tracing.Trace("Format Pattern for String.Format: " + formatPattern);
+                        switch (type)
+                        {
+                            case "Decimal":
+                            case "Integer":
+                            case "DateTime":
+                                // No need to change the value
+                                break;
+                            case "EntityReference":
+                                value = (value as EntityReference).Id;
+                                break;
+                            case "Guid":
+                                value = (Guid)value;
+                                break;
+                            default:
+                                value = value.ToString();
+                                break;
+                        }
 
-                        var formattedResult = string.Format(formatPattern, value);
-                        //_tracing.Trace("Formatted Result: " + formattedResult);
-                        return formattedResult;
+
+                        // Use String.Format to get the additional formatting options - e.g. dates and numeric formatting
+                        _tracing.Trace("Replacing the token value: " + value);
+                        if (!string.IsNullOrEmpty(format))
+                        {
+                            // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
+                            // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
+                            string formatPattern = "{0" + format + "}";                        
+                            var formattedResult = string.Format(formatPattern, value);
+                            return formattedResult;
+                        }
+                        string replacementValue = value?.ToString() ?? "";
+                        return replacementValue;
                     }
-                    string replacementValue = value?.ToString() ?? "";
-                    return replacementValue;
                 }
-                else if(_sectionDictionary.ContainsKey(attributeName.Trim()))
+
+                if(_sectionDictionary.ContainsKey(attributeName.Trim()))
                 {
                     _tracing.Trace("Getting the subsection from the Queryname");
                     return _sectionDictionary[attributeName];
-                    //get subsection from Query here.
                 }
                 else
                 {
@@ -198,10 +185,9 @@ namespace TemplateBuilder.Utilities
                 }
                 return "";
             });
-            //_tracing.Trace("Result: "+result);
             return ReplaceFormatLogic(result);
         }
-        private static string ReplaceFormatLogic(string result)
+        public string ReplaceFormatLogic(string result)
         {
             // Add additional template logic 
             // {{delimeter:, }} - Will only add the string ", " if there is a value before and after
@@ -255,14 +241,12 @@ namespace TemplateBuilder.Utilities
                             result = after.Substring(0, after.IndexOf('|'));
                         break;
                 }
-
-
                 match = Regex.Match(result, pattern);
             }
 
             return result;
         }
-        public  Entity GetEntityReferenceRecord(string entityName)
+        public virtual Entity GetEntityReferenceRecord(string entityName)
         {
             RetrieveEntityRequest retrieveEntityRequest = new RetrieveEntityRequest
             {
@@ -272,7 +256,7 @@ namespace TemplateBuilder.Utilities
             RetrieveEntityResponse retrieveEntityResponse = (RetrieveEntityResponse)_service.Execute(retrieveEntityRequest);
             EntityMetadata primaryEntityMetadata = retrieveEntityResponse.EntityMetadata;
             _tracing.Trace("Getting primaryEntity Metadata");
-            // Step 2: Identify lookup attributes that point to the desired referenced entity
+            //Identify lookup attributes that point to the desired referenced entity
             var lookupAttributes = primaryEntityMetadata.Attributes
                 .Where(attr => attr.AttributeType == AttributeTypeCode.Lookup || attr.AttributeType == AttributeTypeCode.Customer || attr.AttributeType == AttributeTypeCode.Owner)
                 .Cast<LookupAttributeMetadata>()
@@ -281,7 +265,7 @@ namespace TemplateBuilder.Utilities
             ColumnSet columnSet = new ColumnSet(lookupAttributes.Select(attr => attr.LogicalName).ToArray());
             Entity primaryEntityRecord = _service.Retrieve(_primaryEntityName, _primaryEntity.Id, columnSet);
             _tracing.Trace("LookupAttributes Retrieved");
-            // Step 4: Iterate through the retrieved attributes to find the EntityReference
+            //Iterate through the retrieved attributes to find the EntityReference
             foreach (var attributeName in columnSet.Columns)
             {
                 if (primaryEntityRecord.Contains(attributeName) && primaryEntityRecord[attributeName] is EntityReference entityReference)

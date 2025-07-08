@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.props" Condition="Exists('..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.props')" />
+  <Import Project="..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.props" Condition="Exists('..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.props')" />
+  <Import Project="..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.props')" />
+  <Import Project="..\packages\Microsoft.Testing.Extensions.Telemetry.1.7.3\build\netstandard2.0\Microsoft.Testing.Extensions.Telemetry.props" Condition="Exists('..\packages\Microsoft.Testing.Extensions.Telemetry.1.7.3\build\netstandard2.0\Microsoft.Testing.Extensions.Telemetry.props')" />
+  <Import Project="..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.props" Condition="Exists('..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.props')" />
+  <Import Project="..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.props" Condition="Exists('..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E0E7B5BF-D5D2-4401-91FB-7B768BC685F1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TemplateBuilderTests</RootNamespace>
+    <AssemblyName>TemplateBuilderTests</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.5.1.1\lib\net462\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FakeItEasy, Version=6.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FakeItEasy.6.0.0\lib\net45\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.23.0.29, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.23.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Testing.Extensions.MSBuild, Version=1.7.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\lib\netstandard2.0\Microsoft.Testing.Extensions.MSBuild.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Testing.Extensions.Telemetry, Version=1.7.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Testing.Extensions.Telemetry.1.7.3\lib\netstandard2.0\Microsoft.Testing.Extensions.Telemetry.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Testing.Extensions.TrxReport.Abstractions, Version=1.7.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Testing.Extensions.TrxReport.Abstractions.1.7.3\lib\netstandard2.0\Microsoft.Testing.Extensions.TrxReport.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Testing.Extensions.VSTestBridge, Version=1.7.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Testing.Extensions.VSTestBridge.1.7.3\lib\netstandard2.0\Microsoft.Testing.Extensions.VSTestBridge.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Testing.Platform, Version=1.7.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Testing.Platform.1.7.3\lib\netstandard2.0\Microsoft.Testing.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TestPlatform.AdapterUtilities, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.TestPlatform.AdapterUtilities.17.13.0\lib\net462\Microsoft.TestPlatform.AdapterUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TestPlatform.CoreUtilities, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.TestPlatform.ObjectModel.17.13.0\lib\net462\Microsoft.TestPlatform.CoreUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TestPlatform.PlatformAbstractions, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.TestPlatform.ObjectModel.17.13.0\lib\net462\Microsoft.TestPlatform.PlatformAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeCoverage.17.14.1\lib\net462\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.ObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.TestPlatform.ObjectModel.17.13.0\lib\net462\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.3.9.3\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.3.9.3\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="microsoft.xrm.client, Version=5.0.9689.2166, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xrm.Client.2011.5.0.18\lib\net40\microsoft.xrm.client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Moq, Version=4.20.72.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.20.72\lib\net462\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise />
+  </Choose>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\TemplateRepositoryTests.cs" />
+    <Compile Include="Services\ContentGeneratorServiceTests.cs" />
+    <Compile Include="TestableClass\TestableTokenProcessor.cs" />
+    <Compile Include="Utilities\TokenProcessorTests.cs" />
+    <Compile Include="Utilities\XmlHelperTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TemplateBuilder\TemplateBuilder.csproj">
+      <Project>{345CA6B1-5FA3-47F0-B471-3F76AA1397E4}</Project>
+      <Name>TemplateBuilder</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="bin\coretools\CrmSvcUtil.exe.config" />
+    <None Include="bin\coretools\LicenseTerms.docx" />
+    <None Include="bin\coretools\pacTelemetryUpload.exe.config" />
+    <None Include="bin\coretools\SolutionPackager.exe.config" />
+    <None Include="bin\Debug\TemplateBuilder.dll.config" />
+    <None Include="bin\Debug\TemplateBuilderTests.dll.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\MSTest.Analyzers.3.9.3\analyzers\dotnet\cs\MSTest.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\MSTest.Analyzers.3.9.3\analyzers\dotnet\cs\MSTest.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\coretools\CrmSvcUtil.exe" />
+    <Content Include="bin\coretools\CrmSvcUtil.xml" />
+    <Content Include="bin\coretools\Microsoft.ApplicationInsights.dll" />
+    <Content Include="bin\coretools\Microsoft.Crm.Sdk.Proxy.dll" />
+    <Content Include="bin\coretools\Microsoft.Deployment.Compression.Cab.dll" />
+    <Content Include="bin\coretools\Microsoft.Deployment.Compression.dll" />
+    <Content Include="bin\coretools\Microsoft.IdentityModel.Clients.ActiveDirectory.dll" />
+    <Content Include="bin\coretools\Microsoft.PowerPlatform.Tooling.BatchedTelemetry.dll" />
+    <Content Include="bin\coretools\Microsoft.Rest.ClientRuntime.dll" />
+    <Content Include="bin\coretools\Microsoft.Xrm.Sdk.Deployment.dll" />
+    <Content Include="bin\coretools\Microsoft.Xrm.Sdk.dll" />
+    <Content Include="bin\coretools\Microsoft.Xrm.Tooling.Connector.dll" />
+    <Content Include="bin\coretools\Microsoft.Xrm.Tooling.CrmConnectControl.dll" />
+    <Content Include="bin\coretools\Microsoft.Xrm.Tooling.Ui.Styles.dll" />
+    <Content Include="bin\coretools\Newtonsoft.Json.dll" />
+    <Content Include="bin\coretools\Other Redistributable.txt" />
+    <Content Include="bin\coretools\pacTelemetryUpload.exe" />
+    <Content Include="bin\coretools\SolutionPackager.exe" />
+    <Content Include="bin\coretools\SolutionPackagerLib.dll" />
+    <Content Include="bin\coretools\System.Diagnostics.DiagnosticSource.dll" />
+    <Content Include="bin\coretools\System.Memory.dll" />
+    <Content Include="bin\coretools\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="bin\coretools\System.Text.Json.dll" />
+    <Content Include="bin\coretools\System.ValueTuple.dll" />
+    <Content Include="bin\Debug\Castle.Core.dll" />
+    <Content Include="bin\Debug\Castle.Core.xml" />
+    <Content Include="bin\Debug\cs\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\cs\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\cs\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\cs\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\cs\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\cs\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\de\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\es\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\fr\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\it\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\ja\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\ko\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\Microsoft.ApplicationInsights.dll" />
+    <Content Include="bin\Debug\Microsoft.ApplicationInsights.pdb" />
+    <Content Include="bin\Debug\Microsoft.ApplicationInsights.xml" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.MSBuild.dll" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.MSBuild.xml" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.Telemetry.dll" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.Telemetry.xml" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.TrxReport.Abstractions.dll" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.TrxReport.Abstractions.xml" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.VSTestBridge.dll" />
+    <Content Include="bin\Debug\Microsoft.Testing.Extensions.VSTestBridge.xml" />
+    <Content Include="bin\Debug\Microsoft.Testing.Platform.dll" />
+    <Content Include="bin\Debug\Microsoft.Testing.Platform.xml" />
+    <Content Include="bin\Debug\Microsoft.TestPlatform.AdapterUtilities.dll" />
+    <Content Include="bin\Debug\Microsoft.TestPlatform.CoreUtilities.dll" />
+    <Content Include="bin\Debug\Microsoft.TestPlatform.PlatformAbstractions.dll" />
+    <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll" />
+    <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll" />
+    <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll" />
+    <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll" />
+    <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll" />
+    <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml" />
+    <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml" />
+    <Content Include="bin\Debug\Microsoft.Xrm.Sdk.dll" />
+    <Content Include="bin\Debug\Moq.dll" />
+    <Content Include="bin\Debug\pl\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\pl\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\pl\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\pl\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\pl\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\pl\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\pl\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\pt-BR\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\pt-BR\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\pt-BR\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\pt-BR\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\pt-BR\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\pt-BR\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\pt-BR\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\System.Buffers.dll" />
+    <Content Include="bin\Debug\System.Buffers.xml" />
+    <Content Include="bin\Debug\System.Collections.Immutable.dll" />
+    <Content Include="bin\Debug\System.Collections.Immutable.xml" />
+    <Content Include="bin\Debug\System.Data.Common.dll" />
+    <Content Include="bin\Debug\System.Diagnostics.DiagnosticSource.dll" />
+    <Content Include="bin\Debug\System.Diagnostics.DiagnosticSource.xml" />
+    <Content Include="bin\Debug\System.Diagnostics.StackTrace.dll" />
+    <Content Include="bin\Debug\System.Diagnostics.Tracing.dll" />
+    <Content Include="bin\Debug\System.Globalization.Extensions.dll" />
+    <Content Include="bin\Debug\System.IO.Compression.dll" />
+    <Content Include="bin\Debug\System.Memory.dll" />
+    <Content Include="bin\Debug\System.Memory.xml" />
+    <Content Include="bin\Debug\System.Net.Http.dll" />
+    <Content Include="bin\Debug\System.Net.Sockets.dll" />
+    <Content Include="bin\Debug\System.Numerics.Vectors.dll" />
+    <Content Include="bin\Debug\System.Numerics.Vectors.xml" />
+    <Content Include="bin\Debug\System.Reflection.Metadata.dll" />
+    <Content Include="bin\Debug\System.Reflection.Metadata.xml" />
+    <Content Include="bin\Debug\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="bin\Debug\System.Runtime.CompilerServices.Unsafe.xml" />
+    <Content Include="bin\Debug\System.Runtime.Serialization.Primitives.dll" />
+    <Content Include="bin\Debug\System.Security.Cryptography.Algorithms.dll" />
+    <Content Include="bin\Debug\System.Security.SecureString.dll" />
+    <Content Include="bin\Debug\System.Threading.Overlapped.dll" />
+    <Content Include="bin\Debug\System.Threading.Tasks.Extensions.dll" />
+    <Content Include="bin\Debug\System.Threading.Tasks.Extensions.xml" />
+    <Content Include="bin\Debug\System.Xml.XPath.XDocument.dll" />
+    <Content Include="bin\Debug\TemplateBuilder.dll" />
+    <Content Include="bin\Debug\TemplateBuilder.pdb" />
+    <Content Include="bin\Debug\TemplateBuilderTests.dll" />
+    <Content Include="bin\Debug\TemplateBuilderTests.pdb" />
+    <Content Include="bin\Debug\tr\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\tr\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\tr\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\tr\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\tr\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\tr\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\tr\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\zh-Hans\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.Testing.Extensions.MSBuild.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.Testing.Extensions.Telemetry.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.Testing.Extensions.VSTestBridge.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.Testing.Platform.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <Content Include="bin\Debug\zh-Hant\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\arm64\" />
+    <Folder Include="bin\Debug\x64\" />
+    <Folder Include="bin\Debug\x86\" />
+    <Folder Include="bin\Release\" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Testing.Extensions.Telemetry.1.7.3\build\netstandard2.0\Microsoft.Testing.Extensions.Telemetry.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Testing.Extensions.Telemetry.1.7.3\build\netstandard2.0\Microsoft.Testing.Extensions.Telemetry.props'))" />
+    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.props'))" />
+    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.targets" Condition="Exists('..\packages\Microsoft.Testing.Platform.1.7.3\build\netstandard2.0\Microsoft.Testing.Platform.targets')" />
+  <Import Project="..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.targets" Condition="Exists('..\packages\Microsoft.Testing.Platform.MSBuild.1.7.3\build\Microsoft.Testing.Platform.MSBuild.targets')" />
+  <Import Project="..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.3.9.3\build\net462\MSTest.TestAdapter.targets')" />
+  <Import Project="..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.targets" Condition="Exists('..\packages\Microsoft.CodeCoverage.17.14.1\build\netstandard2.0\Microsoft.CodeCoverage.targets')" />
+  <Import Project="..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.targets" Condition="Exists('..\packages\Microsoft.NET.Test.Sdk.17.14.1\build\net462\Microsoft.NET.Test.Sdk.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

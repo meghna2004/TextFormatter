@@ -3,16 +3,14 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Runtime.Remoting.Services;
 using TemplateBuilder.DTO;
-using TemplateBuilder.Enum;
 using TemplateBuilder.Services;
 using TextFormatter;
 using TextFormatter.TemplateBuilder;
 
 namespace TemplateBuilder.Repositories
 {
+    // Repo class to fetch records required for creating templates.
     public class TemplateRepository : PluginBase
     {
         private readonly IOrganizationService _service;
@@ -28,14 +26,14 @@ namespace TemplateBuilder.Repositories
         }
         public vig_templateconfigurationsetting GetTemplateConfig(string messageName, string triggerEntity, string executionMode, string stage)
         {
-            _tracing.Trace("MessageName: " +_context.MessageName);
+            _tracing.Trace("MessageName: " + _context.MessageName);
             _tracing.Trace("PrimaryEntity: " + _context.PrimaryEntityName);
             _tracing.Trace("Mode: " + _context.Mode);
             _tracing.Trace("Stage: " + _context.Stage);
             vig_templateconfigurationsetting templateConfig = null;
             // Get the plugin step id
             _tracing.Trace("Getting PluginStepID");
-            (Guid,string) pluginStepId = _pluginConfigService.GetPluginStepId(messageName, triggerEntity, executionMode, stage);
+            (Guid, string) pluginStepId = _pluginConfigService.GetPluginStepId(messageName, triggerEntity, executionMode, stage);
             _tracing.Trace("PluginStepID retrieved");
 
             QueryExpression getTemplateConfig = new QueryExpression("vig_templateconfigurationsetting")
@@ -86,36 +84,30 @@ namespace TemplateBuilder.Repositories
             _tracing.Trace("---------------------------");
             return null;
         }
-        public TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
+        public virtual TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
         {
             //Change Query to retrive only active records.
-            _tracing.Trace("Create Template Model Query: "+ templateDesId.ToString());
+            _tracing.Trace("Create Template Model Query: " + templateDesId.ToString());
             string retrieveTemplateSections = string.Format(@"<fetch>
                                                                 <entity name='vig_query'>
                                                                     <attribute name='vig_name' />
                                                                     <attribute name='vig_fetchquery' />
                                                                     <attribute name='vig_format' />
                                                                     <attribute name='vig_fetchsequence' />
-                                                                    <filter>
+                                                                    <filter type= 'and'>
                                                                         <condition attribute='vig_textdescriptionbodyid' operator='eq' value='{0}' />
+                                                                        <condition attribute='statuscode' operator='eq' value='1' />
                                                                     </filter>
                                                                     <order attribute='vig_fetchsequence' />
                                                                     <link-entity name='vig_textdescriptionbody' from='vig_textdescriptionbodyid' to= 'vig_textdescriptionbodyid' link-type='outer' alias='TBD'>
                                                                         <attribute name='vig_textformat'/>
                                                                     </link-entity>
-                                                                    <link-entity name='vig_subsection' from='vig_queryid' to='vig_queryid' link-type='outer' alias='DC'>
+                                                                    <link-entity name='vig_repeatinggroup' from='vig_queryid' to='vig_queryid' link-type='outer' alias='RG'>
                                                                         <attribute name='vig_name' />
-                                                                        <attribute name='vig_sequence' />
                                                                         <attribute name='vig_format' />
-                                                                        <order attribute='vig_sequence' />                                                                        
-                                                                    </link-entity>
-                                                                    <link-entity name='vig_queryplaceholder' from= 'vig_queryid' to= 'vig_queryid' link-type= 'outer' alias= 'QP'>
-                                                                        <attribute name= 'vig_datatype' />
-                                                                        <attribute name= 'vig_name' />
-                                                                        <attribute name= 'vig_sequence' />
-                                                                        <attribute name= 'vig_value' />
-                                                                        <attribute name= 'vig_valuefrom' />
-                                                                        <order attribute='vig_sequence' />
+                                                                        <filter type= 'and'>
+                                                                            <condition attribute='statuscode' operator='eq' value='1' />
+                                                                        </filter>
                                                                     </link-entity>
                                                                 </entity>
                                                               </fetch>", templateDesId.ToString());
@@ -129,118 +121,58 @@ namespace TemplateBuilder.Repositories
             foreach (Entity entity in sectionsEntity.Entities)
             {
                 _tracing.Trace("Initilise Variables with Values retrieved");
-                var sectionSeq = entity.GetAttributeValue<int>("vig_fetchsequence");
-                _tracing.Trace("Variable 1 "+ sectionSeq);
-               // int querySeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("vig_fetchsequence").Value);
-                //_tracing.Trace("Variable 2 "+ querySeq);
-                int dcSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("DC.vig_sequence").Value);
-                _tracing.Trace("Variable 3 "+ dcSeq);
-                //int columnSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("Col.vig_sequence").Value);
-                //_tracing.Trace("Variable 4 "+ columnSeq);
-                var fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
-                //_tracing.Trace("Variable 6 "+ fetchQuery);
-               // var colLogicalName = entity.GetAttributeValue<AliasedValue>("Col.vig_columnlogicalname").Value.ToString();
-               // _tracing.Trace("Variable 7 "+ colLogicalName);
-                var textFormat = entity.GetAttributeValue<string>("vig_format");
-                var queryName = entity.GetAttributeValue<string>("vig_name");
+                var fetchSequence = 0;
+                var fetchQuery = string.Empty;
+                var queryName = string.Empty;
+                var rgName = string.Empty;
+                var rgFormat = string.Empty;
 
-                //_tracing.Trace("Variable 8 "+ textFormat);
-                var dcFormat = string.Empty;
-                var dcName = entity.GetAttributeValue<AliasedValue>("DC.vig_name").Value.ToString();
-                _tracing.Trace("Variable 9 "+ dcName);
-                var qpName = string.Empty;
-                _tracing.Trace("Variable 10 "+ qpName);
+                if (entity.Contains("vig_fetchsequence"))
+                {
+                    fetchSequence = entity.GetAttributeValue<int>("vig_fetchsequence");
+                    _tracing.Trace("Variable 1 " + fetchSequence);
+                }
+                if (entity.Contains("vig_fetchquery"))
+                {
+                    fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
+                }
+                if (entity.Contains("vig_name"))
+                {
+                    queryName = entity.GetAttributeValue<string>("vig_name");
+                }
+                if (entity.Contains("RG.vig_name"))
+                {
+                     rgName = entity.GetAttributeValue<AliasedValue>("RG.vig_name").Value.ToString();
+                    _tracing.Trace("Variable 9 " + rgName);
+                }
                 if (entity.Contains("TBD.vig_textformat"))
                 {
                     var tbdFormat = entity.GetAttributeValue<AliasedValue>("TBD.vig_textformat").Value.ToString();
                     descriptionBody.structure = tbdFormat;
                 }
-                var qpValue = string.Empty;
-                int qpSeq = 0;
-                var qpDataType = new OptionSetValue();
-                var qpGuidType = new OptionSetValue();
-                if (entity.Contains("QP.vig_name"))
+                if (entity.Contains("RG.vig_format"))
                 {
-                     qpName = entity.GetAttributeValue<AliasedValue>("QP.vig_name").Value.ToString();
-                    if (entity.Contains("QP.vig_value"))
-                    {
-                        qpValue = entity.GetAttributeValue<AliasedValue>("QP.vig_value").Value.ToString();
-                        _tracing.Trace("Variable 11 " + qpValue);
-                    }
-                     qpSeq = Convert.ToInt32(entity.GetAttributeValue<AliasedValue>("QP.vig_sequence").Value);
-                    _tracing.Trace("Variable 5 " + qpSeq);
-                     qpDataType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_datatype").Value;
-                     qpGuidType = (OptionSetValue)entity.GetAttributeValue<AliasedValue>("QP.vig_valuefrom").Value;
-                    _tracing.Trace("Variable 12 " + qpDataType);
-
-                    _tracing.Trace("Variable 13 " + qpGuidType);
+                    rgFormat = entity.GetAttributeValue<AliasedValue>("RG.vig_format").Value.ToString();
                 }
-
-                _tracing.Trace("Getting Query placeholder values");
-              
-                
                 _tracing.Trace("All Variables Initialised");
-                if (entity.Contains("DC.vig_format"))
-                {
-                    dcFormat = entity.GetAttributeValue<AliasedValue>("DC.vig_format").Value.ToString();
-                    //_tracing.Trace("Variable 14 "+ dcFormat);
-                }
-               /* var section = descriptionBody.sectionClasses.FirstOrDefault(s => s.sequence == sectionSeq);
-                if (section == null)
-                {
-                    section = new Sections
-                    {
-                        sequence = sectionSeq,
-                        format = secFormat,
-                        queryClasses = new List<Queries>()
-
-                    };
-                    descriptionBody.sectionClasses.Add(section);
-                }*/
-                var query = descriptionBody.queries.FirstOrDefault(q => q.sequence == sectionSeq);
+                var query = descriptionBody.queries.FirstOrDefault(q => q.sequence == fetchSequence);
                 if (query == null)
                 {
                     query = new Queries
                     {
-                        sequence = sectionSeq,
-                        subSections = new List<SubSections>(),
-                        //placeholders = new List<QueryPlaceholders>(),
+                        sequence = fetchSequence,
+                        repeatingGroups = new List<RepeatingGroups>(),
                         queryText = fetchQuery,
-                        format = textFormat,
                         name = queryName
                     };
                     descriptionBody.queries.Add(query);
                 }
-                var subSections = query.subSections.FirstOrDefault(c => c.sequence == dcSeq);
-                if (subSections == null)
+                var subSections = new RepeatingGroups
                 {
-                    subSections = new SubSections
-                    {
-                        sequence = dcSeq,
-                       // content = new List<Columns>(),
-                        name = dcName,
-                        format = dcFormat
-                    };
-                    query.subSections.Add(subSections);
-                }
-               /* subSections.content.Add(new Columns
-                {
-                    sequence = columnSeq,
-                    colName = colLogicalName
-                });*/
-                /*var qPlaceholder = query.placeholders.FirstOrDefault(p =>p.sequence==qpSeq);
-                if(qPlaceholder == null)
-                {
-                    qPlaceholder = new QueryPlaceholders
-                    {
-                        sequence = qpSeq,
-                        name = qpName,
-                        value = qpValue,
-                        dataType = (DataType)qpDataType.Value,
-                        valueFrom = (ValueFrom)qpGuidType.Value
-                    };
-                    query.placeholders.Add(qPlaceholder);
-                }*/
+                    name = rgName,
+                    format = rgFormat
+                };
+                query.repeatingGroups.Add(subSections);
             }
             _tracing.Trace("Template Model Created");
             return descriptionBody;

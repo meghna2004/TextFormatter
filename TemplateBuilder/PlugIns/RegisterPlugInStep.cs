@@ -17,6 +17,7 @@ namespace TemplateBuilder.PlugIns
   , Description = "TextFormatter.TemplateBuilder.RegisterPlugInStep: Update of Template Config Setting"
   , Id = "309f1217-34f2-48c5-a7f7-3ecea99ba7ef"
   )]
+    //Plugin to register the GenerateContentPlugIn.cs plugin on the given configurations.
     public class RegisterPlugInStep:PluginBase
     {
         protected override void ExecuteCDSPlugin(LocalPluginContext localcontext)

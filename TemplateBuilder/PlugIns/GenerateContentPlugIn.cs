@@ -13,6 +13,7 @@ namespace TemplateBuilder.PlugIns
 {
     public class GenerateContentPlugIn: PluginBase
     {
+        //Plugin to create formatted text for emails or document templates.
         protected override void ExecuteCDSPlugin(LocalPluginContext localcontext)
         {
             var context = localcontext.PluginExecutionContext;
@@ -22,9 +23,7 @@ namespace TemplateBuilder.PlugIns
             TemplateRepository templateRepo = new TemplateRepository(service,context,tracingService,pluginConfigService);
             OutputStrategyFactory outputStrategy = new OutputStrategyFactory(context,service);
             ContentGeneratorService contentGenService = null;
-            //Retrieve config table
-            //retrive all active and ready templates
-            //execute
+
             var messageName = context.MessageName;
             tracingService.Trace("Message Name: "+messageName);
             var entityName = context.PrimaryEntityName;
@@ -50,7 +49,6 @@ namespace TemplateBuilder.PlugIns
                     contentGenService = new ContentGeneratorService(service, context, tracingService, templateRepo, customTemplate.vig_textdescriptionbodyid.Id);
                     vig_textdescriptionbody tbd = service.Retrieve("vig_textdescriptionbody", customTemplate.vig_textdescriptionbodyid.Id, columnSet:new ColumnSet(true)).ToEntity<vig_textdescriptionbody>();
                     string content = contentGenService.BuildContent();
-                    //Get enum type
                     tracingService.Trace("Enum value is: ");
                     var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
                     tracingService.Trace("Enum value is: " + tempType.ToString());
@@ -60,36 +58,8 @@ namespace TemplateBuilder.PlugIns
                     strategy.OutputContent(content, subject);
                     tbd.vig_preview = content;
                     service.Update(tbd);
-                    /*if (customTemplate.vig_outputtype != null *//*&&
-                        System.Enum.IsDefined(typeof(TemplateType), customTemplate.vig_outputtype.Value)*//*)
-                    {
-                        var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
-                        Console.WriteLine("Enum value is: " + tempType);
-
-                        var strategy = outputStrategyFactory.GetOutputStrategy(tempType);
-                        strategy.OutputContent(content, context, service);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid choice value.");
-                    }*/
-
-
-
                 }
             }
-           /* string fetchTemplateConfig = string.Format(@"");
-            EntityCollection configsRetrieved = service.RetrieveMultiple(new FetchExpression(fetchTemplateConfig));
-            foreach (Entity config in configsRetrieved.Entities)
-            {
-                string fetchTemplates = string.Format(@"");
-                EntityCollection templatesRetrieved = service.RetrieveMultiple(new FetchExpression(fetchTemplates));
-                foreach (Entity template in templatesRetrieved.Entities)
-                {
-                    CustomTemplates customTemplates = new CustomTemplates();
-
-                }
-            }*/
         }
     }
 }
