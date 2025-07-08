@@ -11,6 +11,7 @@ using TemplateBuilder.Utilities;
 
 namespace TemplateBuilder.Services
 {
+    //Service for generating the formatted text.
     public class ContentGeneratorService
     {
         private readonly IOrganizationService _service;

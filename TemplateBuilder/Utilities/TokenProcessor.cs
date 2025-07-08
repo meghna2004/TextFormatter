@@ -55,14 +55,13 @@ namespace TemplateBuilder.Utilities
         /// </summary>
         /// <param name="fetchXML"></param>
         /// <returns></returns>
-        //Update ReplaceTokesn to take into Account the QueryDictionary.
         public string ReplaceTokens(string text)
         {
             _tracing.Trace("Start of Replace Token Functions");
 
             // Accept format strings in the format
-            // {attributeLogicalName} or {attribtueLogicalName:formatstring}
-            // Where formatstring is a standard String.format format string e.g. {course.date:dd MMM yyyy}
+            // {{attributeLogicalName}} or {{attribtueLogicalName:formatstring}} or {{queryName-repeatingGroupname}} or {{queryName-attributeLogicalName}}
+            // Where formatstring is a standard String.format format string e.g. {{course.date:dd MMM yyyy}}
             var result = Regex.Replace(text, _pattern, (match) =>
             {
                 _tracing.Trace("Inside var result");
@@ -118,7 +117,6 @@ namespace TemplateBuilder.Utilities
                 else
                 {
                     _tracing.Trace("Replacing for normal attribute in subsection");
-                    //Check if there is a group by and then call the replace token function again. 
                     attributeName = match.Groups[1].Value.Trim();
                 }
                 // Try get the query
@@ -127,7 +125,6 @@ namespace TemplateBuilder.Utilities
                 _tracing.Trace("Token: " + attributeName);
 
                 // Check if there is an attribute value
-                //Need to put this into its own function. this function should take in the attribute name and a bool called repeating. If the repeating is true it should call itself again. but we also need the group by entity to 
                 if (_entity != null)
                 {
                     if (_entity.Contains(attributeName))
@@ -168,11 +165,8 @@ namespace TemplateBuilder.Utilities
                         {
                             // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
                             // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
-                            string formatPattern = "{0" + format + "}";
-                            // _tracing.Trace("Format Pattern for String.Format: " + formatPattern);
-
+                            string formatPattern = "{0" + format + "}";                        
                             var formattedResult = string.Format(formatPattern, value);
-                            //_tracing.Trace("Formatted Result: " + formattedResult);
                             return formattedResult;
                         }
                         string replacementValue = value?.ToString() ?? "";
@@ -262,7 +256,7 @@ namespace TemplateBuilder.Utilities
             RetrieveEntityResponse retrieveEntityResponse = (RetrieveEntityResponse)_service.Execute(retrieveEntityRequest);
             EntityMetadata primaryEntityMetadata = retrieveEntityResponse.EntityMetadata;
             _tracing.Trace("Getting primaryEntity Metadata");
-            // Step 2: Identify lookup attributes that point to the desired referenced entity
+            //Identify lookup attributes that point to the desired referenced entity
             var lookupAttributes = primaryEntityMetadata.Attributes
                 .Where(attr => attr.AttributeType == AttributeTypeCode.Lookup || attr.AttributeType == AttributeTypeCode.Customer || attr.AttributeType == AttributeTypeCode.Owner)
                 .Cast<LookupAttributeMetadata>()
@@ -271,7 +265,7 @@ namespace TemplateBuilder.Utilities
             ColumnSet columnSet = new ColumnSet(lookupAttributes.Select(attr => attr.LogicalName).ToArray());
             Entity primaryEntityRecord = _service.Retrieve(_primaryEntityName, _primaryEntity.Id, columnSet);
             _tracing.Trace("LookupAttributes Retrieved");
-            // Step 4: Iterate through the retrieved attributes to find the EntityReference
+            //Iterate through the retrieved attributes to find the EntityReference
             foreach (var attributeName in columnSet.Columns)
             {
                 if (primaryEntityRecord.Contains(attributeName) && primaryEntityRecord[attributeName] is EntityReference entityReference)

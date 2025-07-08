@@ -3,16 +3,14 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Runtime.Remoting.Services;
 using TemplateBuilder.DTO;
-using TemplateBuilder.Enum;
 using TemplateBuilder.Services;
 using TextFormatter;
 using TextFormatter.TemplateBuilder;
 
 namespace TemplateBuilder.Repositories
 {
+    // Repo class to fetch records required for creating templates.
     public class TemplateRepository : PluginBase
     {
         private readonly IOrganizationService _service;

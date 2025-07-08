@@ -1,16 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TemplateBuilder.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk;
 using Moq;
 using TemplateBuilder.Repositories;
 using TemplateBuilder.DTO;
 using Microsoft.Xrm.Sdk.Query;
-using System.Collections;
 
 namespace TemplateBuilder.Services.Tests
 {
@@ -174,7 +169,7 @@ namespace TemplateBuilder.Services.Tests
             Assert.AreEqual(expected, buildContentResult);
         }
         [TestMethod()]
-        public void T02_BuildContent_MultipleQueries()
+        public void T03_BuildContent_MultipleQueries()
         {
             //Arrange
 
@@ -224,8 +219,8 @@ namespace TemplateBuilder.Services.Tests
             var entityCollection = new EntityCollection(new List<Entity>() {testEntity});
             var entityCollection2 = new EntityCollection(new List<Entity>() { testEntity2 });
             _mockService.SetupSequence(s => s.RetrieveMultiple(It.IsAny<FetchExpression>()))
-            .Returns(entityCollection)   // First call → Alice
-            .Returns(entityCollection2); // Second call → Jane
+            .Returns(entityCollection)   
+            .Returns(entityCollection2); 
 
             _mockService.Setup(s => s.Retrieve("account", primaryEntity.Id, It.IsAny<ColumnSet>())).Returns(primaryEntity);
             _mockContext.Setup(c => c.PrimaryEntityName).Returns("account");
@@ -248,7 +243,7 @@ namespace TemplateBuilder.Services.Tests
         }
         [TestMethod]
         [ExpectedException(typeof(InvalidPluginExecutionException))]
-        public void ExecuteFetchAndPopulateValues_InvalidXml_ThrowsException()
+        public void T04_ExecuteFetchAndPopulateValues_InvalidXml_ThrowsException()
         {
             // Arrange
             var repeatingGroups = new List<RepeatingGroups>();
@@ -283,7 +278,7 @@ namespace TemplateBuilder.Services.Tests
         }
 
         [TestMethod]
-        public void ExecuteFetchAndPopulateValues_ReturnsContentForOneEntity()
+        public void T05_ExecuteFetchAndPopulateValues_ReturnsContentForOneEntity()
         {
             // Arrange
             var entity = new Entity("contact") { Id = Guid.NewGuid() };

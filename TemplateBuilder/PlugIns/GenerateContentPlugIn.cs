@@ -13,6 +13,7 @@ namespace TemplateBuilder.PlugIns
 {
     public class GenerateContentPlugIn: PluginBase
     {
+        //Plugin to create formatted text for emails or document templates.
         protected override void ExecuteCDSPlugin(LocalPluginContext localcontext)
         {
             var context = localcontext.PluginExecutionContext;
@@ -48,7 +49,6 @@ namespace TemplateBuilder.PlugIns
                     contentGenService = new ContentGeneratorService(service, context, tracingService, templateRepo, customTemplate.vig_textdescriptionbodyid.Id);
                     vig_textdescriptionbody tbd = service.Retrieve("vig_textdescriptionbody", customTemplate.vig_textdescriptionbodyid.Id, columnSet:new ColumnSet(true)).ToEntity<vig_textdescriptionbody>();
                     string content = contentGenService.BuildContent();
-                    //Get enum type
                     tracingService.Trace("Enum value is: ");
                     var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
                     tracingService.Trace("Enum value is: " + tempType.ToString());
