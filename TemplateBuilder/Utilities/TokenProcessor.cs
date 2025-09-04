@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TemplateBuilder.Utilities
 {
-
     public class TokenProcessor
     {
         private readonly IOrganizationService _service;
@@ -55,7 +55,9 @@ namespace TemplateBuilder.Utilities
         /// </summary>
         /// <param name="fetchXML"></param>
         /// <returns></returns>
-        public string ReplaceTokens(string text)
+        
+        //split into different methods with different patterns.
+       /* public string ReplaceTokens(string text)
         {
             _tracing.Trace("Start of Replace Token Functions");
 
@@ -186,7 +188,154 @@ namespace TemplateBuilder.Utilities
                 return "";
             });
             return ReplaceFormatLogic(result);
+        }*/
+        public string ReplaceTokens(string text)
+        {
+            _tracing.Trace("Start of Replace Token Functions");
+
+            var result = Regex.Replace(text, _pattern, match =>
+            {
+                _tracing.Trace("Inside Regex match evaluation");
+
+                string fullToken = match.Groups[1].Value;
+                _tracing.Trace("Fulltoken retrieved");
+
+                string format = match.Groups[2].Value;
+                _tracing.Trace("format retrieved");
+
+                // Decide what entity and attribute the token maps to
+                string attributeName = ResolveEntityAndAttribute(fullToken);
+
+                if (_entity != null)
+                {
+                    return FormatEntityValue(attributeName, format);
+                }
+                return ResolveSectionValue(attributeName);       
+                // If not found in entity, check section dictionary
+            });
+
+            return ReplaceFormatLogic(result);
         }
+
+        private string  ResolveEntityAndAttribute(string fullToken)
+        {
+            string attributeName = string.Empty;
+            _tracing.Trace("Inside Resolve Entity and Attribute");
+
+            if (_tdbOrQuery)
+            {
+                if (_entityDictionary != null)
+                {
+                    _tracing.Trace("entity Dictionary is not null");
+
+                    // Case: {{queryName-attribute}}
+                    (_entity, attributeName) = ResolveFromEntityDictionary(fullToken);
+                    _tracing.Trace("Resolve From entity dictionary completed");
+
+                }
+                else
+                {
+                    _tracing.Trace("entity Dictionary is null");
+
+                    // Case: {{entity.attribute}} or {{attribute}}
+                    (_entity, attributeName) = ResolveFromQuery(fullToken);
+                    _tracing.Trace("Resolve from query completed");
+
+                }
+            }
+            else
+            {
+                _tracing.Trace("not tdbOrQuery"+ fullToken.Trim());
+
+                // Case: plain {{attribute}}
+               // entity = _primaryEntity;
+                attributeName = fullToken.Trim();
+            }
+
+            return attributeName;
+        }
+        private (Entity entity, string attributeName) ResolveFromEntityDictionary(string token)
+        {
+            _tracing.Trace("Resolve From Entity Dictionary");
+
+            var parts = token.Split('-');
+            if (parts.Length > 1)
+            {
+                string queryName = parts[0];
+                _tracing.Trace("Resolve from entity dictionary: query name retrieved");
+
+                string attributeName = parts[1];
+                _tracing.Trace("Resolve from entity dicitonary: attribute name retrieved.");
+
+                if (_entityDictionary.ContainsKey(queryName))
+                {
+                    _tracing.Trace($"Entity found in dictionary for {queryName}");
+                    return (_entityDictionary[queryName], attributeName);
+                }
+
+                _tracing.Trace($"Entity not found for query {queryName}");
+                return (null, attributeName);
+            }
+            return (null, token);
+        }
+        private (Entity entity, string attributeName) ResolveFromQuery(string token)
+        {
+            _tracing.Trace("Resolve From Query");
+
+            var parts = token.Split('.');
+            if (parts.Length > 1)
+            {
+                _tracing.Trace("Resolve from query: parts from token is present.");
+
+                Entity er = GetEntityReferenceRecord(parts[0]);
+                if (er != null)
+                {
+                    _entity = er;
+                }
+                return (_entity, parts[1]);
+            }
+
+            // If just attribute name, default to primary entity
+            return (_primaryEntity, token.Trim());
+        }
+        private string FormatEntityValue(string attributeName, string format)
+        {
+            _tracing.Trace("Format Entity Value");
+
+            if (!_entity.Contains(attributeName)) return ResolveSectionValue(attributeName);
+
+            object value = _entity[attributeName];
+            if (value is AliasedValue aliased) value = aliased.Value;
+
+            // Normalize value types
+            if (value is EntityReference er) value = er.Id;
+            else if (value is Guid guid) value = guid;
+            else if (!(value is DateTime) && !(value is decimal) && !(value is int))
+                value = value.ToString();
+
+            _tracing.Trace($"Replacing token {attributeName} with value {value}");
+
+            // Apply formatting
+            if (!string.IsNullOrEmpty(format))
+            {
+                string formatPattern = "{0" + format + "}";
+                return string.Format(formatPattern, value);
+            }
+
+            return value?.ToString() ?? "";
+        }
+        private string ResolveSectionValue(string attributeName)
+        {
+            if (_sectionDictionary.ContainsKey(attributeName.Trim()))
+            {
+                _tracing.Trace("Found subsection match for " + attributeName);
+                return _sectionDictionary[attributeName];
+            }
+
+            _tracing.Trace("SectionDictionary missing key: " + attributeName);
+            return "";
+        }
+
         public string ReplaceFormatLogic(string result)
         {
             // Add additional template logic 

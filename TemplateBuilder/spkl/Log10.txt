@@ -45,3 +45,4 @@
 14:32:18	
 14:32:18	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.79\content\bin\coretools\spkl.crmsvcutil.config'
 14:32:24	Code written to C:\Vigence\Projects\Vig Internal\TextFormatter\TextFormatterPlugIns\EarlyBoundTypes.cs.
+15:59:33		Read 15 Entities

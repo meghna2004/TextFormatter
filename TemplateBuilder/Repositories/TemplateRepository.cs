@@ -108,6 +108,20 @@ namespace TemplateBuilder.Repositories
                                                                         <filter type= 'and'>
                                                                             <condition attribute='statuscode' operator='eq' value='1' />
                                                                         </filter>
+                                                                        <link-entity name='vig_repeatinggroup' from='vig_nestedrepeatinggroupid' to='vig_repeatinggroupid' link-type='outer' alias='NRG'>
+                                                                            <attribute name='vig_format' />
+                                                                            <attribute name='vig_name' />
+                                                                            <attribute name='vig_queryid' />
+                                                                            <filter>
+                                                                                <condition attribute='statuscode' operator='eq' value='1' />
+                                                                            </filter>
+                                                                            <link-entity name='vig_query' from='vig_queryid' to='vig_queryid' link-type='outer' alias='nQuery'>
+                                                                                <attribute name='vig_fetchquery' />
+                                                                                <attribute name='vig_fetchsequence' />
+                                                                                <attribute name='vig_format' />
+                                                                                <attribute name='vig_name' />
+                                                                            </link-entity>
+                                                                        </link-entity>
                                                                     </link-entity>
                                                                 </entity>
                                                               </fetch>", templateDesId.ToString());
@@ -126,6 +140,10 @@ namespace TemplateBuilder.Repositories
                 var queryName = string.Empty;
                 var rgName = string.Empty;
                 var rgFormat = string.Empty;
+                var nrgName = string.Empty;
+                var nrgFormat = string.Empty;
+                var nFetchQuery = string.Empty;
+                var nQueryName = string.Empty;
 
                 if (entity.Contains("vig_fetchsequence"))
                 {
@@ -135,6 +153,7 @@ namespace TemplateBuilder.Repositories
                 if (entity.Contains("vig_fetchquery"))
                 {
                     fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
+                    //crete data model here.
                 }
                 if (entity.Contains("vig_name"))
                 {
@@ -142,7 +161,7 @@ namespace TemplateBuilder.Repositories
                 }
                 if (entity.Contains("RG.vig_name"))
                 {
-                     rgName = entity.GetAttributeValue<AliasedValue>("RG.vig_name").Value.ToString();
+                    rgName = entity.GetAttributeValue<AliasedValue>("RG.vig_name").Value.ToString();
                     _tracing.Trace("Variable 9 " + rgName);
                 }
                 if (entity.Contains("TBD.vig_textformat"))
@@ -153,6 +172,30 @@ namespace TemplateBuilder.Repositories
                 if (entity.Contains("RG.vig_format"))
                 {
                     rgFormat = entity.GetAttributeValue<AliasedValue>("RG.vig_format").Value.ToString();
+                }
+                if (entity.Contains("NRG.vig_format"))
+                {
+                    _tracing.Trace("NRG Format");
+
+                    nrgFormat = entity.GetAttributeValue<AliasedValue>("NRG.vig_format").Value.ToString();
+                }
+                if (entity.Contains("NRG.vig_name"))
+                {
+                    _tracing.Trace("NRG Name");
+
+                    nrgName = entity.GetAttributeValue<AliasedValue>("NRG.vig_name").Value.ToString();
+                }
+                if (entity.Contains("nQuery.vig_name"))
+                {
+                    _tracing.Trace("Nested Query Name");
+
+                    nQueryName = entity.GetAttributeValue<AliasedValue>("nQuery.vig_name").Value.ToString();
+                }
+                if (entity.Contains("nQuery.vig_fetchquery"))
+                {
+                    _tracing.Trace("Nested Query text");
+
+                    nFetchQuery = entity.GetAttributeValue<AliasedValue>("nQuery.vig_fetchquery").Value.ToString();
                 }
                 _tracing.Trace("All Variables Initialised");
                 var query = descriptionBody.queries.FirstOrDefault(q => q.sequence == fetchSequence);
@@ -167,11 +210,31 @@ namespace TemplateBuilder.Repositories
                     };
                     descriptionBody.queries.Add(query);
                 }
+
                 var subSections = new RepeatingGroups
                 {
                     name = rgName,
-                    format = rgFormat
+                    format = rgFormat,
+                    nestedRepeatingGroups = new List<RepeatingGroups>(),
                 };
+                if(nrgFormat!=string.Empty&&nrgFormat!=string.Empty)
+                {
+                    var nestedRepeatingGroup = new RepeatingGroups
+                    {
+                        name = nrgName,
+                        format = nrgFormat
+                    };
+                    if (nQueryName != string.Empty && nFetchQuery != string.Empty)
+                    {
+                        var nestedQuery = new Queries
+                        {
+                            name = nQueryName,
+                            queryText = nFetchQuery
+                        };
+                        subSections.query = nestedQuery;
+                    }
+                    subSections.nestedRepeatingGroups.Add(nestedRepeatingGroup);
+                }
                 query.repeatingGroups.Add(subSections);
             }
             _tracing.Trace("Template Model Created");

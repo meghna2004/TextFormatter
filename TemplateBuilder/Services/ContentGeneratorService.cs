@@ -2,10 +2,7 @@
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
 using TemplateBuilder.DTO;
-using TemplateBuilder.OutputStrategies;
 using TemplateBuilder.Repositories;
 using TemplateBuilder.Utilities;
 
@@ -75,8 +72,10 @@ namespace TemplateBuilder.Services
         }
         public object ExecuteFetchAndPopulateValues(string queryName,string fetchXml, List<RepeatingGroups> repeatingGroups)
         {
+            Dictionary<string, string> nestedValues = new Dictionary<string, string>();
+
             XmlHelper xmlHelper = new XmlHelper();
-            _tracing.Trace("Format the query using XML Helper");
+            _tracing.Trace("Format the query using XML Helper: "+fetchXml);
             string formattedQuery = xmlHelper.ExtractFetchQuery(fetchXml);
             try
             {
@@ -84,6 +83,7 @@ namespace TemplateBuilder.Services
                 EntityCollection retrievedEntities = _service.RetrieveMultiple(new FetchExpression(formattedQuery));
                 _tracing.Trace("Records Retrieved from Query");
                 string format = string.Empty;
+                string childContent = string.Empty;
                 if (retrievedEntities.Entities.Count > 0)
                 {
                     _tracing.Trace("Entities count more than 0");
@@ -94,7 +94,7 @@ namespace TemplateBuilder.Services
                         _tracing.Trace("Add query and entity to dictionary: "+ queryName+ "ID: "+ retrievedEntities.Entities[0].Id);
                         _queryDictionary.Add(queryName, retrievedEntities.Entities[0]);
                     }
-                    _tracing.Trace("EmailFormatterFunctions: Test 4 "+ _descriptionFormatInfo.structuredValue);
+                    _tracing.Trace("TextFormatter: Test 4 "+ _descriptionFormatInfo.structuredValue);
                     foreach (Entity entity in retrievedEntities.Entities)
                     {
                         processToken = new TokenProcessor(_tracing, _service, _context, entity);
@@ -102,12 +102,51 @@ namespace TemplateBuilder.Services
                         {
                             foreach (var dc in repeatingGroups)
                             {
+                                //Call ExecuteFechandPopulateValues for each nested repeating groups.
                                 if (!string.IsNullOrEmpty(dc.format))
                                 {
                                     format = dc.format;
                                 }
+                                _tracing.Trace("Format of Repeating Group:"+ format);
+
+                                if (dc.nestedRepeatingGroups!=null)
+                                {
+                                    
+
+                                    _tracing.Trace("Nested Repeating Group");
+                                    _tracing.Trace("Starting Recursion "+ dc.query.name);
+                                    _tracing.Trace("Starting Recursion two " + dc.query.queryText);
+
+
+                                    object nestedResult = ExecuteFetchAndPopulateValues(dc.query.name, dc.query.queryText,dc.nestedRepeatingGroups);
+                                    dc.nestedRepeatingGroups = nestedResult as List<RepeatingGroups>;
+
+                                    _tracing.Trace("Recursion Ended");
+                                    foreach (var nested in dc.nestedRepeatingGroups)
+                                    {
+                                        childContent += nested.contentValue;
+                                        if (!nestedValues.ContainsKey(nested.name))
+                                        {
+                                            nestedValues.Add(nested.name, childContent);
+                                        }
+                                        else
+                                        {
+                                            nestedValues[nested.name] = childContent;
+                                        }
+                                    }
+                                    childContent = processToken.ReplaceTokens(format);
+                                }
+                                else
+                                {
+                                    processToken = new TokenProcessor(_tracing, _service, _context, entity);
+
+                                }
+
                                 dc.contentValue += processToken.ReplaceTokens(format);
-                                _tracing.Trace("EmailFormatterFunctions: Test 8");
+                                processToken = new TokenProcessor(_tracing, _service, _context, _queryDictionary, nestedValues);
+
+                               
+
                             }
                         }
                     }

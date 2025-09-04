@@ -1,0 +1,5 @@
+15:58:20	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+15:58:20	c 2022 Microsoft Corporation. All rights reserved
+15:58:20	
+15:58:20	Begin Reading Metadata from MetadataProviderService
+15:58:20	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'

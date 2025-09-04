@@ -21,7 +21,7 @@ namespace TemplateBuilder.Utilities
             }
             catch (Exception ex)
             {
-                throw new InvalidPluginExecutionException("Invalid Layout Query Format. Must be in the fetch query format", ex);
+                throw new InvalidPluginExecutionException($"Invalid Layout Query Format. Must be in the fetch query format: {xmlQuery}", ex);
             }
         }
     }

@@ -1,0 +1,77 @@
+15:58:42	   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+15:58:42	   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)
+15:58:42	======================================================================================================================
+15:58:42	
+15:58:42	Microsoft.Xrm.Tooling.Connector.CrmServiceClient Error: 2 : ERROR REQUESTING Token FROM THE Authentication context - General ADAL Error
+15:58:42	Source	: mscorlib
+15:58:42	Method	: ThrowIfExceptional
+15:58:42	Date	: 04/09/2025
+15:58:42	Time	: 15:58:42
+15:58:42	Error	: One or more errors occurred.
+15:58:42	Stack Trace	: at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+15:58:42	   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+15:58:42	   at System.Threading.Tasks.Task`1.get_Result()
+15:58:42	   at Microsoft.Xrm.Tooling.Connector.CrmWebSvc.CreateFromResourceUrlAsync(Uri targetServiceUrl)
+15:58:42	   at Microsoft.Xrm.Tooling.Connector.CrmWebSvc.GetAuthorityFromTargetService(Uri targetServiceUrl, CrmLogEntry logSink)
+15:58:42	   at Microsoft.Xrm.Tooling.Connector.CrmWebSvc.ExecuteAuthenticateServiceProcess(Uri serviceUrl, ClientCredentials clientCredentials, X509Certificate2 userCert, UserIdentifier user, String clientId, Uri redirectUri, PromptBehavior promptBehavior, String tokenCachePath, Boolean isOnPrem, String authority, Uri& targetServiceUrl, AuthenticationContext& authContext, String& resource, UserIdentifier& userIdent, CrmLogEntry logSink, Boolean useDefaultCreds, SecureString clientSecret)
+15:58:42	======================================================================================================================
+15:58:42	Inner Exception Level 1	: 
+15:58:42	Source	: mscorlib
+15:58:42	Method	: ThrowForNonSuccess
+15:58:42	Date	: 04/09/2025
+15:58:42	Time	: 15:58:42
+15:58:42	Error	: An error occurred while sending the request.
+15:58:42	Stack Trace	: at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+15:58:42	   at Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.Http.HttpClientWrapper.<GetResponseAsync>d__31.MoveNext()
+15:58:42	--- End of stack trace from previous location where exception was thrown ---
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+15:58:42	   at Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationParameters.<CreateFromResourceUrlCommonAsync>d__15.MoveNext()
+15:58:42	--- End of stack trace from previous location where exception was thrown ---
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+15:58:42	   at Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationParameters.<CreateFromResourceUrlAsync>d__12.MoveNext()
+15:58:42	======================================================================================================================
+15:58:42	Inner Exception Level 2	: 
+15:58:42	Source	: System
+15:58:42	Method	: EndGetResponse
+15:58:42	Date	: 04/09/2025
+15:58:42	Time	: 15:58:42
+15:58:42	Error	: Unable to connect to the remote server
+15:58:42	Stack Trace	: at System.Net.HttpWebRequest.EndGetResponse(IAsyncResult asyncResult)
+15:58:42	   at System.Net.Http.HttpClientHandler.GetResponseCallback(IAsyncResult ar)
+15:58:42	======================================================================================================================
+15:58:42	Inner Exception Level 3	: 
+15:58:42	Source	: System
+15:58:42	Method	: InternalEndConnect
+15:58:42	Date	: 04/09/2025
+15:58:42	Time	: 15:58:42
+15:58:42	Error	: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond 51.137.137.159:443
+15:58:42	Stack Trace	: at System.Net.Sockets.Socket.InternalEndConnect(IAsyncResult asyncResult)
+15:58:42	   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+15:58:42	   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)
+15:58:42	======================================================================================================================
+15:58:42	
+15:58:42	Microsoft.Xrm.Tooling.Connector.CrmServiceClient Error: 2 : Source	: mscorlib
+15:58:42	Method	: ThrowIfExceptional
+15:58:42	Date	: 04/09/2025
+15:58:42	Time	: 15:58:42
+15:58:42	Error	: One or more errors occurred.
+15:58:42	Stack Trace	: at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+15:58:42	   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+15:58:42	   at System.Threading.Tasks.Task`1.get_Result()
+15:58:42	   at Microsoft.Xrm.Tooling.Connector.CrmWebSvc.CreateFromResourceUrlAsync(Uri targetServiceUrl)
+15:58:42	   at Microsoft.Xrm.Tooling.Connector.CrmWebSvc.GetAuthorityFromTargetService(Uri targetServiceUrl, CrmLogEntry logSink)
+15:58:42	   at Microsoft.Xrm.Tooling.Connector.CrmWebSvc.ExecuteAuthenticateServiceProcess(Uri serviceUrl, ClientCredentials clientCredentials, X509Certificate2 userCert, UserIdentifier user, String clientId, Uri redirectUri, PromptBehavior promptBehavior, String tokenCachePath, Boolean isOnPrem, String authority, Uri& targetServiceUrl, AuthenticationContext& authContext, String& resource, UserIdentifier& userIdent, CrmLogEntry logSink, Boolean useDefaultCreds, SecureString clientSecret)
+15:58:42	======================================================================================================================
+15:58:42	Inner Exception Level 1	: 
+15:58:42	Source	: mscorlib
+15:58:42	Method	: ThrowForNonSuccess
+15:58:42	Date	: 04/09/2025
+15:58:42	Time	: 15:58:42
+15:58:42	Error	: An error occurred while sending the request.
+15:58:42	Stack Trace	: at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+15:58:42	   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)

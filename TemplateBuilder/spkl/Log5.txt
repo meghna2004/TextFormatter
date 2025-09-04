@@ -32,3 +32,9 @@
 13:00:12		Read 15 Entities
 14:30:26	CrmSvcUtil : CRM Service Utility [Version 9.1.0.82]
 14:32:18	CrmSvcUtil : CRM Service Utility [Version 9.1.0.82]
+15:59:24	CrmSvcUtil : CRM Service Utility [Version 9.1.0.182]
+15:59:24	c 2022 Microsoft Corporation. All rights reserved
+15:59:24	
+15:59:24	Begin Reading Metadata from MetadataProviderService
+15:59:24	Loading config from 'C:\Vigence\Projects\Vig Internal\TextFormatter\packages\Microsoft.CrmSdk.CoreTools.9.1.0.179\content\bin\coretools\spkl.crmsvcutil.config'
+15:59:25		Begin Reading Metadata from Server
