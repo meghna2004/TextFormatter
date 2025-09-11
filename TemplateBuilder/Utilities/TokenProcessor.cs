@@ -20,6 +20,8 @@ namespace TemplateBuilder.Utilities
         private  Entity _entity;
         private Dictionary<string, Entity> _entityDictionary;
         private Dictionary<string, string> _sectionDictionary;
+        private Dictionary<string, string> _nestedDictionary;
+
         private bool _tdbOrQuery;
 
         private readonly string _pattern = @"(?<!{){{((?:[\w]+-)?[\w .]*)(:[^}]+)*}}(?!})";
@@ -30,6 +32,14 @@ namespace TemplateBuilder.Utilities
             _context = context;
             _tracing = tracing;
             _entity = entity;
+        }
+        public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity, Dictionary<string, string> nestedDictionary)
+        {
+            _service = service;
+            _context = context;
+            _tracing = tracing;
+            _entity = entity;
+            _nestedDictionary = nestedDictionary;
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Dictionary<string,Entity> entityDictionary, Dictionary<string,string> sectionDictionary)
         {
@@ -300,18 +310,50 @@ namespace TemplateBuilder.Utilities
         }
         private string FormatEntityValue(string attributeName, string format)
         {
-            _tracing.Trace("Format Entity Value");
+            _tracing.Trace("Format Entity Value " +attributeName);
+            _tracing.Trace("Entity: " + _entity.Id.ToString());
+            if (!_entity.Contains(attributeName))
+            {
+                _tracing.Trace("attribute not present in entity");
+                return ResolveSectionValue(attributeName);
+            }
 
-            if (!_entity.Contains(attributeName)) return ResolveSectionValue(attributeName);
-
-            object value = _entity[attributeName];
+            /*object value = _entity[attributeName];
             if (value is AliasedValue aliased) value = aliased.Value;
 
             // Normalize value types
             if (value is EntityReference er) value = er.Id;
             else if (value is Guid guid) value = guid;
             else if (!(value is DateTime) && !(value is decimal) && !(value is int))
-                value = value.ToString();
+                value = value.ToString();*/
+
+            var value = _entity[attributeName];
+            var type = value.GetType().Name;
+            // If aliased value, get the real value
+            if (type == "AliasedValue")
+            {
+                value = (value as AliasedValue).Value;
+                type = value.GetType().Name;
+            }
+
+            switch (type)
+            {
+                case "Decimal":
+                case "Integer":
+                case "DateTime":
+                    // No need to change the value
+                    break;
+                case "EntityReference":
+                    value = (value as EntityReference).Id;
+                    break;
+                case "Guid":
+                    value = (Guid)value;
+                    break;
+                default:
+                    value = value.ToString();
+                    break;
+            }
+
 
             _tracing.Trace($"Replacing token {attributeName} with value {value}");
 
@@ -326,14 +368,27 @@ namespace TemplateBuilder.Utilities
         }
         private string ResolveSectionValue(string attributeName)
         {
-            if (_sectionDictionary.ContainsKey(attributeName.Trim()))
+            _tracing.Trace("Resolving Section Values");
+            if (_sectionDictionary != null&&_sectionDictionary.Count > 0)
             {
-                _tracing.Trace("Found subsection match for " + attributeName);
-                return _sectionDictionary[attributeName];
+                if (_sectionDictionary.ContainsKey(attributeName.Trim()))
+                {
+                    _tracing.Trace("Found subsection match for " + attributeName);
+                    return _sectionDictionary[attributeName];
+                }
+            }
+            _tracing.Trace("Resolving from nested dictionary");
+            if(_nestedDictionary != null&&_nestedDictionary.Count > 0)
+            {
+                if (_nestedDictionary.ContainsKey(attributeName.Trim()))
+                {
+                    return _nestedDictionary[attributeName];
+                }
             }
 
             _tracing.Trace("SectionDictionary missing key: " + attributeName);
             return "";
+
         }
 
         public string ReplaceFormatLogic(string result)

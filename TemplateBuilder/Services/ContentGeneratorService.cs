@@ -17,6 +17,8 @@ namespace TemplateBuilder.Services
         private readonly TemplateRepository _templateRepo;
         private TextDescriptionBodies _descriptionFormatInfo;
         private Dictionary<string, Entity> _queryDictionary = new Dictionary<string, Entity>();
+        Dictionary<string, string> _nestedValues = new Dictionary<string, string>();
+
         public ContentGeneratorService(IOrganizationService service, IPluginExecutionContext context,ITracingService tracingService, TemplateRepository templateRepo, Guid descriptionID)
         {
             _service = service;
@@ -72,8 +74,8 @@ namespace TemplateBuilder.Services
         }
         public object ExecuteFetchAndPopulateValues(string queryName,string fetchXml, List<RepeatingGroups> repeatingGroups)
         {
-            Dictionary<string, string> nestedValues = new Dictionary<string, string>();
 
+            
             XmlHelper xmlHelper = new XmlHelper();
             _tracing.Trace("Format the query using XML Helper: "+fetchXml);
             string formattedQuery = xmlHelper.ExtractFetchQuery(fetchXml);
@@ -87,7 +89,7 @@ namespace TemplateBuilder.Services
                 if (retrievedEntities.Entities.Count > 0)
                 {
                     _tracing.Trace("Entities count more than 0");
-                    TokenProcessor processToken = new TokenProcessor(_tracing, _service, _context, retrievedEntities.Entities[0]);
+                    TokenProcessor processToken = new TokenProcessor(_tracing, _service, _context, retrievedEntities.Entities[0],null);
 
                     if (!_queryDictionary.ContainsKey(queryName))
                     {
@@ -97,25 +99,22 @@ namespace TemplateBuilder.Services
                     _tracing.Trace("TextFormatter: Test 4 "+ _descriptionFormatInfo.structuredValue);
                     foreach (Entity entity in retrievedEntities.Entities)
                     {
-                        processToken = new TokenProcessor(_tracing, _service, _context, entity);
                         if(repeatingGroups!=null)
                         {
                             foreach (var dc in repeatingGroups)
                             {
-                                //Call ExecuteFechandPopulateValues for each nested repeating groups.
                                 if (!string.IsNullOrEmpty(dc.format))
                                 {
                                     format = dc.format;
                                 }
                                 _tracing.Trace("Format of Repeating Group:"+ format);
 
-                                if (dc.nestedRepeatingGroups!=null)
+                                if (dc.nestedRepeatingGroups!=null&&dc.nestedRepeatingGroups.Count>0)
                                 {
                                     
-
                                     _tracing.Trace("Nested Repeating Group");
-                                    _tracing.Trace("Starting Recursion "+ dc.query.name);
-                                    _tracing.Trace("Starting Recursion two " + dc.query.queryText);
+                                    _tracing.Trace("Starting Recursion "+ dc.name);
+                                    //_tracing.Trace("Starting Recursion two " + dc.query.queryText);
 
 
                                     object nestedResult = ExecuteFetchAndPopulateValues(dc.query.name, dc.query.queryText,dc.nestedRepeatingGroups);
@@ -125,28 +124,33 @@ namespace TemplateBuilder.Services
                                     foreach (var nested in dc.nestedRepeatingGroups)
                                     {
                                         childContent += nested.contentValue;
-                                        if (!nestedValues.ContainsKey(nested.name))
+                                        if (!_nestedValues.ContainsKey(nested.name))
                                         {
-                                            nestedValues.Add(nested.name, childContent);
+                                            _tracing.Trace("Nested Group Name:"+ nested.name);
+                                            //_tracing.Trace("Nested Group Name:" + childContent);
+                                            _nestedValues.Add(nested.name, childContent);
                                         }
                                         else
                                         {
-                                            nestedValues[nested.name] = childContent;
+                                            _nestedValues[nested.name] = childContent;
                                         }
                                     }
+                                    processToken = new TokenProcessor(_tracing, _service, _context, entity, _nestedValues);
                                     childContent = processToken.ReplaceTokens(format);
+                                }
+                                
+                               _tracing.Trace($"Repeating Group: {dc.name} doesn't contain nested repeating group");
+                                if (_nestedValues.Count > 0&&_nestedValues!=null)
+                                {
+                                    _tracing.Trace("Nested Values dictionary populated");
                                 }
                                 else
                                 {
-                                    processToken = new TokenProcessor(_tracing, _service, _context, entity);
-
+                                    _tracing.Trace("Nested Values dictionary not populated");
                                 }
+                                processToken = new TokenProcessor(_tracing, _service, _context, entity,_nestedValues);
 
                                 dc.contentValue += processToken.ReplaceTokens(format);
-                                processToken = new TokenProcessor(_tracing, _service, _context, _queryDictionary, nestedValues);
-
-                               
-
                             }
                         }
                     }
