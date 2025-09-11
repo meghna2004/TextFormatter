@@ -13,7 +13,7 @@ namespace TemplateBuilderTests.TestableClass
         private readonly Entity _fakeEntityReferenceRecord;
 
         public TestableTokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity fakeReference)
-            : base(tracing, service, context)
+            : base(tracing, service, context, null)
         {
             _fakeEntityReferenceRecord = fakeReference;
         }

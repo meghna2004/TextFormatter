@@ -32,6 +32,9 @@ namespace TemplateBuilder.Utilities
             _context = context;
             _tracing = tracing;
             _entity = entity;
+            _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
+            _primaryEntityName = _primaryEntity.LogicalName;
+            _tdbOrQuery = true;
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity, Dictionary<string, string> nestedDictionary)
         {
@@ -50,15 +53,16 @@ namespace TemplateBuilder.Utilities
             _sectionDictionary = sectionDictionary;
             _tdbOrQuery = true;
         }
-        public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context)
+        /*public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity)
         {
             _service = service;
             _context = context;
             _tracing = tracing;
+            _entity = entity;
             _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
             _primaryEntityName = _primaryEntity.LogicalName;
             _tdbOrQuery = true;
-        }
+        }*/
         /// <summary>              
         /// _entity = _primaryEntity;
         /// Replaces curly brace values with the attribute values from the entity results
@@ -248,6 +252,12 @@ namespace TemplateBuilder.Utilities
                     _tracing.Trace("entity Dictionary is null");
 
                     // Case: {{entity.attribute}} or {{attribute}}
+                    if (_entity != null)
+                    {
+                        _tracing.Trace("Replacing nested query");
+                        attributeName = fullToken.Trim();
+                        return attributeName;
+                    }
                     (_entity, attributeName) = ResolveFromQuery(fullToken);
                     _tracing.Trace("Resolve from query completed");
 
@@ -260,6 +270,7 @@ namespace TemplateBuilder.Utilities
                 // Case: plain {{attribute}}
                // entity = _primaryEntity;
                 attributeName = fullToken.Trim();
+
             }
 
             return attributeName;
@@ -291,8 +302,10 @@ namespace TemplateBuilder.Utilities
         private (Entity entity, string attributeName) ResolveFromQuery(string token)
         {
             _tracing.Trace("Resolve From Query");
-
+            //adjust for replacing tokens in nested group query.
+            
             var parts = token.Split('.');
+
             if (parts.Length > 1)
             {
                 _tracing.Trace("Resolve from query: parts from token is present.");

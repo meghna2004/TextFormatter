@@ -29,7 +29,7 @@ namespace TemplateBuilder.Services
         }
         public string BuildContent()
         {
-            TokenProcessor processor = new TokenProcessor(_tracing, _service, _context);
+            TokenProcessor processor = new TokenProcessor(_tracing, _service, _context,null);
             _tracing.Trace("Template Model Created");
             Dictionary<string, string> columnValues = new Dictionary<string, string>();
             string emailDes = string.Empty;
@@ -73,9 +73,7 @@ namespace TemplateBuilder.Services
             }
         }
         public object ExecuteFetchAndPopulateValues(string queryName,string fetchXml, List<RepeatingGroups> repeatingGroups)
-        {
-
-            
+        {            
             XmlHelper xmlHelper = new XmlHelper();
             _tracing.Trace("Format the query using XML Helper: "+fetchXml);
             string formattedQuery = xmlHelper.ExtractFetchQuery(fetchXml);
@@ -85,7 +83,7 @@ namespace TemplateBuilder.Services
                 EntityCollection retrievedEntities = _service.RetrieveMultiple(new FetchExpression(formattedQuery));
                 _tracing.Trace("Records Retrieved from Query");
                 string format = string.Empty;
-                string childContent = string.Empty;
+                //string childContent = string.Empty;
                 if (retrievedEntities.Entities.Count > 0)
                 {
                     _tracing.Trace("Entities count more than 0");
@@ -116,40 +114,33 @@ namespace TemplateBuilder.Services
                                     _tracing.Trace("Starting Recursion "+ dc.name);
                                     //_tracing.Trace("Starting Recursion two " + dc.query.queryText);
 
-
-                                    object nestedResult = ExecuteFetchAndPopulateValues(dc.query.name, dc.query.queryText,dc.nestedRepeatingGroups);
+                                    //replace tokens in querytext before calling the method.either primary entity or field from the parent query.
+                                    processToken = new TokenProcessor(_tracing,_service, _context, entity);
+                                    string nestedQuery = processToken.ReplaceTokens(dc.query.queryText);
+                                    object nestedResult = ExecuteFetchAndPopulateValues(dc.query.name, nestedQuery,dc.nestedRepeatingGroups);
                                     dc.nestedRepeatingGroups = nestedResult as List<RepeatingGroups>;
 
                                     _tracing.Trace("Recursion Ended");
                                     foreach (var nested in dc.nestedRepeatingGroups)
                                     {
-                                        childContent += nested.contentValue;
+/*                                        childContent = nested.contentValue;
+*/                                       
                                         if (!_nestedValues.ContainsKey(nested.name))
                                         {
                                             _tracing.Trace("Nested Group Name:"+ nested.name);
                                             //_tracing.Trace("Nested Group Name:" + childContent);
-                                            _nestedValues.Add(nested.name, childContent);
+                                            _nestedValues.Add(nested.name, nested.contentValue);
                                         }
                                         else
                                         {
-                                            _nestedValues[nested.name] = childContent;
+                                            _nestedValues[nested.name] = nested.contentValue;
                                         }
-                                    }
-                                    processToken = new TokenProcessor(_tracing, _service, _context, entity, _nestedValues);
-                                    childContent = processToken.ReplaceTokens(format);
-                                }
-                                
-                               _tracing.Trace($"Repeating Group: {dc.name} doesn't contain nested repeating group");
-                                if (_nestedValues.Count > 0&&_nestedValues!=null)
-                                {
-                                    _tracing.Trace("Nested Values dictionary populated");
-                                }
-                                else
-                                {
-                                    _tracing.Trace("Nested Values dictionary not populated");
-                                }
+                                        nested.contentValue = string.Empty;
+                                    }                                 
+                                }                               
+                               //_tracing.Trace($"Repeating Group: {dc.name} doesn't contain nested repeating group");
                                 processToken = new TokenProcessor(_tracing, _service, _context, entity,_nestedValues);
-
+                                //add the unique ID in the token on the format before replacing it to avoid duplicate values.
                                 dc.contentValue += processToken.ReplaceTokens(format);
                             }
                         }

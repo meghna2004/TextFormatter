@@ -337,7 +337,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("contact", contactId, It.IsAny<ColumnSet>()))
            .Returns(contactEntity);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object,null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -381,7 +381,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Execute(It.IsAny<RetrieveEntityRequest>()))
                        .Returns(retrieveEntityResponse);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object,null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -434,7 +434,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("contact", contactId, It.IsAny<ColumnSet>()))
            .Returns(contactEntity);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -487,7 +487,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("Contact", contactId, It.IsAny<ColumnSet>()))
            .Returns(contactEntity);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -557,7 +557,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("contact", contactId1, It.IsAny<ColumnSet>()))
            .Returns(contactEntity1);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, null );
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
