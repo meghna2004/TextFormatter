@@ -181,12 +181,12 @@ namespace TemplateBuilder.Repositories.Tests
                 {
                     Assert.AreEqual("sampleRepeatingGroup", rg.name);
                     Assert.AreEqual("Order placed on: {{prod.orderdate:dd/MM/yyyy}} Product Name: {{prod.productName}} Price: £{{prod.price:0.00}} Amount: {{prod.amount}}[[suffix:kg]]", rg.format);
-                   foreach(var nrg in rg.nestedRepeatingGroups)
+                    Assert.AreEqual(nestedQuery, rg.query.queryText);
+                    Assert.AreEqual("sampleNestedQuery", rg.query.name);
+                    foreach (var nrg in rg.nestedRepeatingGroups)
                     {
                         Assert.AreEqual("sampleNestedRepeatingGroup",nrg.name);
                         Assert.AreEqual("{{vig_firstname}}", nrg.format);
-                        Assert.AreEqual(nestedQuery,nrg.query.queryText);
-                        Assert.AreEqual("sampleNestedQuery",nrg.query.name);
                     }
                 }
             }

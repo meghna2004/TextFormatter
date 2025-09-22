@@ -126,7 +126,7 @@ namespace TemplateBuilder.Repositories
                                                                 </entity>
                                                               </fetch>", templateDesId.ToString());
             EntityCollection sectionsEntity = _service.RetrieveMultiple(new FetchExpression(retrieveTemplateSections));
-            _tracing.Trace("Query Ran");
+            //_tracing.Trace("Query Ran");
 
             var descriptionBody = new TextDescriptionBodies
             {
@@ -134,7 +134,7 @@ namespace TemplateBuilder.Repositories
             };
             foreach (Entity entity in sectionsEntity.Entities)
             {
-                _tracing.Trace("Initilise Variables with Values retrieved");
+                //_tracing.Trace("Initilise Variables with Values retrieved");
                 var fetchSequence = 0;
                 var fetchQuery = string.Empty;
                 var queryName = string.Empty;
@@ -148,7 +148,7 @@ namespace TemplateBuilder.Repositories
                 if (entity.Contains("vig_fetchsequence"))
                 {
                     fetchSequence = entity.GetAttributeValue<int>("vig_fetchsequence");
-                    _tracing.Trace("Variable 1 " + fetchSequence);
+                    //_tracing.Trace("Variable 1 " + fetchSequence);
                 }
                 if (entity.Contains("vig_fetchquery"))
                 {
@@ -162,7 +162,7 @@ namespace TemplateBuilder.Repositories
                 if (entity.Contains("RG.vig_name"))
                 {
                     rgName = entity.GetAttributeValue<AliasedValue>("RG.vig_name").Value.ToString();
-                    _tracing.Trace("Variable 9 " + rgName);
+                   // _tracing.Trace("Variable 9 " + rgName);
                 }
                 if (entity.Contains("TBD.vig_textformat"))
                 {
@@ -175,25 +175,25 @@ namespace TemplateBuilder.Repositories
                 }
                 if (entity.Contains("NRG.vig_format"))
                 {
-                    _tracing.Trace("NRG Format");
+                    //_tracing.Trace("NRG Format");
 
                     nrgFormat = entity.GetAttributeValue<AliasedValue>("NRG.vig_format").Value.ToString();
                 }
                 if (entity.Contains("NRG.vig_name"))
                 {
-                    _tracing.Trace("NRG Name");
+                    //_tracing.Trace("NRG Name");
 
                     nrgName = entity.GetAttributeValue<AliasedValue>("NRG.vig_name").Value.ToString();
                 }
                 if (entity.Contains("nQuery.vig_name"))
                 {
-                    _tracing.Trace("Nested Query Name");
+                    //_tracing.Trace("Nested Query Name");
 
                     nQueryName = entity.GetAttributeValue<AliasedValue>("nQuery.vig_name").Value.ToString();
                 }
                 if (entity.Contains("nQuery.vig_fetchquery"))
                 {
-                    _tracing.Trace("Nested Query text");
+                    //_tracing.Trace("Nested Query text");
 
                     nFetchQuery = entity.GetAttributeValue<AliasedValue>("nQuery.vig_fetchquery").Value.ToString();
                 }
