@@ -18,7 +18,6 @@ namespace TemplateBuilder.Services
         private TextDescriptionBodies _descriptionFormatInfo;
         private Dictionary<string, Entity> _queryDictionary = new Dictionary<string, Entity>();
         Dictionary<string, string> _nestedValues = new Dictionary<string, string>();
-        private string _errorMessage;
         public ContentGeneratorService(IOrganizationService service, IPluginExecutionContext context,ITracingService tracingService, TemplateRepository templateRepo, Guid descriptionID)
         {
             _service = service ?? throw new InvalidPluginExecutionException("We couldn’t connect to Dynamics 365. Please try again later or contact your system administrator.");
@@ -35,7 +34,7 @@ namespace TemplateBuilder.Services
             }
             catch (Exception ex)
             {
-                _tracing.Trace($"[ContentGeneratorService] Error Loading template {descriptionID}: {ex}");
+                _tracing.Trace($"[ContentGeneratorService.ctor] Error Loading template {descriptionID}: {ex}");
                 throw new InvalidPluginExecutionException("We couldn’t load the requested template. Please try again later or contact your system administrator.");
             }
         }

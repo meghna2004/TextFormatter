@@ -26,13 +26,8 @@ namespace TemplateBuilder.Repositories
         }
         public vig_templateconfigurationsetting GetTemplateConfig(string messageName, string triggerEntity, string executionMode, string stage)
         {
-            _tracing.Trace("MessageName: " + _context.MessageName);
-            _tracing.Trace("PrimaryEntity: " + _context.PrimaryEntityName);
-            _tracing.Trace("Mode: " + _context.Mode);
-            _tracing.Trace("Stage: " + _context.Stage);
             vig_templateconfigurationsetting templateConfig = null;
             // Get the plugin step id
-            _tracing.Trace("Getting PluginStepID");
             (Guid, string) pluginStepId = _pluginConfigService.GetPluginStepId(messageName, triggerEntity, executionMode, stage);
             _tracing.Trace("PluginStepID retrieved");
 

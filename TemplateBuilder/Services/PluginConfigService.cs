@@ -136,7 +136,7 @@ namespace TemplateBuilder.Services
         }
         private Guid GetPluginTypeId()
         {
-            _context.Trace("Query Expression to retrive the plugin type (the actual plugin code that is registered on this step)");
+        //Query Expression to retrive the plugin type (the actual plugin code that is registered on this step
             QueryExpression query = new QueryExpression("plugintype");
             query.ColumnSet = new ColumnSet("plugintypeid");
             query.Criteria.AddCondition("typename", ConditionOperator.Equal, pluginTypeName);
@@ -150,7 +150,6 @@ namespace TemplateBuilder.Services
         }
         public (Guid,string) GetPluginStepId(string messageName, string triggerEntity, string executionMode, string stage)
         {
-            _context.Trace("Get PluginType");
             Guid pluginTypeId = GetPluginTypeId();
             _context.Trace("Plugin Type Retrieved");
 

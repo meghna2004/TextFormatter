@@ -28,16 +28,24 @@ namespace TemplateBuilder.Utilities
 
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity)
         {
-            _service = service;
-            _context = context;
-            _tracing = tracing;
-            _entity = entity;
-            _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
-            if(_primaryEntity != null)
-            {
-                _primaryEntityName = _primaryEntity.LogicalName;
-            }
+            _service = service ?? throw new InvalidPluginExecutionException("We couldn’t connect to Dynamics 365. Please try again later or contact your system administrator."); 
+            _context = context ?? throw new InvalidPluginExecutionException("We couldn’t process your request because the context information is missing. Please try again later or contact your system administrator.");
+            _tracing = tracing ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
+            _entity = entity ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
             _tdbOrQuery = true;
+            try
+            {
+                _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
+                if (_primaryEntity != null)
+                {
+                    _primaryEntityName = _primaryEntity.LogicalName;
+                }
+            }
+            catch (Exception ex) 
+            {
+                _tracing.Trace($"[TokenProcessor.ctor] Failed to retrieve primary entity {context.PrimaryEntityName}: {ex}");
+                throw new InvalidPluginExecutionException("We couldn’t load the record details needed to generate the template. Please try again or contact your system administrator.");
+            }        
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity, Dictionary<string, string> nestedDictionary)
         {
@@ -67,24 +75,30 @@ namespace TemplateBuilder.Utilities
         
         public string ReplaceTokens(string text)
         {
-
-            var result = Regex.Replace(text, _pattern, match =>
+            try
             {
-
-                string fullToken = match.Groups[1].Value;
-
-                string format = match.Groups[2].Value;
-
-                string attributeName = ResolveEntityAndAttribute(fullToken);
-
-                if (_entity != null)
+                var result = Regex.Replace(text, _pattern, match =>
                 {
-                    return FormatEntityValue(attributeName, format);
-                }
-                return ResolveSectionValue(attributeName);       
-            });
+                    string fullToken = match.Groups[1].Value;
 
-            return ReplaceFormatLogic(result);
+                    string format = match.Groups[2].Value;
+
+                    string attributeName = ResolveEntityAndAttribute(fullToken);
+
+                    if (_entity != null)
+                    {
+                        return FormatEntityValue(attributeName, format);
+                    }
+                    return ResolveSectionValue(attributeName);
+                });
+
+                return ReplaceFormatLogic(result);
+            }
+            catch(Exception ex) 
+            {
+                _tracing.Trace($"[ReplaceTokens] Failed to replace tokens in text: {text}. Error: {ex}");
+                throw new InvalidPluginExecutionException("We couldn't process some placeholders in the template. Please check the template setup and try again. If issue persists, contact your system administrator.");
+            }
         }
 
         private string  ResolveEntityAndAttribute(string fullToken)
@@ -161,53 +175,60 @@ namespace TemplateBuilder.Utilities
         }
         private string FormatEntityValue(string attributeName, string format)
         {
-
-            if (!_entity.Contains(attributeName))
+            try
             {
-                return ResolveSectionValue(attributeName);
+                if (!_entity.Contains(attributeName))
+                {
+                    return ResolveSectionValue(attributeName);
+                }
+
+                var value = _entity[attributeName];
+                var type = value.GetType().Name;
+                // If aliased value, get the real value
+                if (type == "AliasedValue")
+                {
+                    value = (value as AliasedValue).Value;
+                    type = value.GetType().Name;
+                }
+                _tracing.Trace("Type: " + type);
+                switch (type)
+                {
+                    case "Decimal":
+                    case "Integer":
+                    case "DateTime":
+                        // No need to change the value
+                        break;
+                    case "EntityReference":
+                        value = (value as EntityReference).Id;
+                        break;
+                    case "Guid":
+                        value = (Guid)value;
+                        break;
+                    case "Money":
+                        value = ((Money)value).Value;
+                        break;
+                    default:
+                        value = value.ToString();
+                        break;
+                }
+
+                _tracing.Trace("Type: " + type);
+
+                // Apply formatting
+                if (!string.IsNullOrEmpty(format))
+                {
+                    string formatPattern = "{0" + format + "}";
+                    return string.Format(formatPattern, value);
+                }
+
+                return value?.ToString() ?? "";
+            }
+            catch (Exception ex)
+            {
+                _tracing.Trace($"[FormatEntityValue] An error occured while formatting attribute: {attributeName} with the format: {format}. Exception: {ex}");
+                throw new InvalidPluginExecutionException("There was an error while formatting the column type of the data retrieved. Please contact your system administrator.");
             }
 
-
-            var value = _entity[attributeName];
-            var type = value.GetType().Name;
-            // If aliased value, get the real value
-            if (type == "AliasedValue")
-            {
-                value = (value as AliasedValue).Value;
-                type = value.GetType().Name;
-            }
-            _tracing.Trace("Type: " + type);
-            switch (type)
-            {
-                case "Decimal":
-                case "Integer":
-                case "DateTime":
-                    // No need to change the value
-                    break;
-                case "EntityReference":
-                    value = (value as EntityReference).Id;
-                    break;
-                case "Guid":
-                    value = (Guid)value;
-                    break;
-                case "Money":
-                    value = ((Money)value).Value;
-                    break;
-                default:
-                    value = value.ToString();
-                    break;
-            }
-
-            _tracing.Trace("Type: " + type);
-
-            // Apply formatting
-            if (!string.IsNullOrEmpty(format))
-            {
-                string formatPattern = "{0" + format + "}";
-                return string.Format(formatPattern, value);
-            }
-
-            return value?.ToString() ?? "";
         }
         private string ResolveSectionValue(string attributeName)
         {
