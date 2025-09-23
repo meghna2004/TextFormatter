@@ -88,6 +88,109 @@ namespace TemplateBuilder.Repositories.Tests
                 }
             }
         }
+        [TestMethod()]
+        public void CreateTemplateModelWithNestedRepeatingGroupsTest()
+        {
+            //Arrange
+            var mockService = new Mock<IOrganizationService>();
+            var mockServiceProvider = new Mock<IServiceProvider>();
+            var mockContext = new Mock<IPluginExecutionContext>();
+            var mockTracing = new Mock<ITracingService>();
+            var mockPluginConfig = new Mock<PluginConfigService>(mockService.Object, null);
+            Guid descriptionID = Guid.NewGuid();
+            var query = @"<fetch>
+                            <entity name='account'>
+                            <attribute name='name' />
+                            <link-entity name='order' from='orderid' to='orderid' link-type='outer' alias='co'>
+                                <attribute name='ordernumber' />
+                                <link-entity name='product' from='productid' to='productid' link-type='outer' alias='prod'>
+                                    <attribute name='orderdate' />
+                                    <attribute name='productName' />
+                                    <attribute name='price' />
+                                    <attribute name='ammount' />
+                                </link-entity>
+                            </link-entity>
+                            </entity>
+                        </fetch>";
+            var nestedQuery = @"<fetch>
+                                  <entity name='vig_coursedelegate'>
+                                    <attribute name='vig_firstname' />
+                                  </entity>
+                                </fetch>";
+            Entity testEntity = new Entity("vig_query", Guid.NewGuid());
+            testEntity["vig_name"] = "sampleQuery";
+            testEntity["vig_fetchquery"] = query;
+            testEntity["vig_format"] = "";
+            testEntity["vig_fetchsequence"] = 1;
+            testEntity["TBD.vig_textformat"] = new AliasedValue("TBD", "vig_textformat", "Hello {{sampleQuery-name}}. Here is your order number: {{sampleQuery-co.ordernumber}} Here are the order details: {{sampleQuery-sampleRepeatingGroup}}");
+            testEntity["RG.vig_name"] = new AliasedValue("RG", "vig_name", "sampleRepeatingGroup");
+            testEntity["RG.vig_format"] = new AliasedValue("RG", "vig_format", "Order placed on: {{prod.orderdate:dd/MM/yyyy}} Product Name: {{prod.productName}} Price: £{{prod.price:0.00}} Amount: {{prod.amount}}[[suffix:kg]]");
+            testEntity["NRG.vig_name"] = new AliasedValue("NRG", "vig_name", "sampleNestedRepeatingGroup");
+            testEntity["NRG.vig_format"] = new AliasedValue("NRG", "vig_format", "{{vig_firstname}}");
+            testEntity["nQuery.vig_fetchquery"] = new AliasedValue("nQuery","vig_fetchquery",nestedQuery);
+            testEntity["nQuery.vig_name"] = new AliasedValue("nQuery","vig_name","sampleNestedQuery");
+            var entityCollection = new EntityCollection(new List<Entity> { testEntity });
+            mockService.Setup(s => s.RetrieveMultiple(It.IsAny<FetchExpression>())).Returns(entityCollection);
+
+            var tempRepo = new TemplateRepository(mockService.Object, mockContext.Object, mockTracing.Object, mockPluginConfig.Object);
+           
+            var repeatingGroup = new List<RepeatingGroups>{new RepeatingGroups
+            {
+                name = "sampleRepeatingGroup",
+                format = "Order placed on: {{prod.orderdate:dd/MM/yyyy}} Product Name: {{prod.productName}} Price: £{{prod.price:0.00}} Amount: {{prod.amount}}[[suffix:kg]]",
+                nestedRepeatingGroups = new List<RepeatingGroups>{new RepeatingGroups
+                {
+                    name = "sampleNestedRepeatingGroup",
+                    format = "{{vig_firstname}}",
+                    query = new Queries
+                    {
+                        name = "sampleNestedQuery",
+                        queryText = nestedQuery
+                    }
+                }
+                }
+            }
+            };
+            var templateModel = new TextDescriptionBodies
+            {
+                structure = "Hello {{sampleQuery-name}}. Here is your order number: {{sampleQuery-co.ordernumber}} Here are the order details: {{sampleQuery-sampleRepeatingGroup}}",
+                queries = new List<Queries>
+                {
+                    new Queries
+                    {
+                        name = "sampleQuery",
+                        queryText = query,
+                        sequence = 1,
+                        repeatingGroups =repeatingGroup
+                    }
+                }
+            };
+            var expectedResult = templateModel;
+            //Act
+            var result = tempRepo.CreateTemplateModel(descriptionID);
+
+            //Assert
+            Assert.AreEqual(expectedResult.structuredValue, result.structuredValue);
+            Assert.AreEqual(expectedResult.structure, result.structure);
+            foreach (var r in result.queries)
+            {
+                Assert.AreEqual("sampleQuery", r.name);
+                Assert.AreEqual(query, r.queryText);
+                Assert.AreEqual(1, r.sequence);
+                foreach (var rg in r.repeatingGroups)
+                {
+                    Assert.AreEqual("sampleRepeatingGroup", rg.name);
+                    Assert.AreEqual("Order placed on: {{prod.orderdate:dd/MM/yyyy}} Product Name: {{prod.productName}} Price: £{{prod.price:0.00}} Amount: {{prod.amount}}[[suffix:kg]]", rg.format);
+                    Assert.AreEqual(nestedQuery, rg.query.queryText);
+                    Assert.AreEqual("sampleNestedQuery", rg.query.name);
+                    foreach (var nrg in rg.nestedRepeatingGroups)
+                    {
+                        Assert.AreEqual("sampleNestedRepeatingGroup",nrg.name);
+                        Assert.AreEqual("{{vig_firstname}}", nrg.format);
+                    }
+                }
+            }
+        }
         [TestMethod]
         public void GetTemplatesTest()
         {

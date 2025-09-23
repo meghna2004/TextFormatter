@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TemplateBuilder.Utilities
 {
-
     public class TokenProcessor
     {
         private readonly IOrganizationService _service;
@@ -20,16 +20,40 @@ namespace TemplateBuilder.Utilities
         private  Entity _entity;
         private Dictionary<string, Entity> _entityDictionary;
         private Dictionary<string, string> _sectionDictionary;
+        private Dictionary<string, string> _nestedDictionary;
+
         private bool _tdbOrQuery;
 
         private readonly string _pattern = @"(?<!{){{((?:[\w]+-)?[\w .]*)(:[^}]+)*}}(?!})";
 
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity)
         {
+            _service = service ?? throw new InvalidPluginExecutionException("We couldn’t connect to Dynamics 365. Please try again later or contact your system administrator."); 
+            _context = context ?? throw new InvalidPluginExecutionException("We couldn’t process your request because the context information is missing. Please try again later or contact your system administrator.");
+            _tracing = tracing ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
+            _entity = entity ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
+            _tdbOrQuery = true;
+            try
+            {
+                _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
+                if (_primaryEntity != null)
+                {
+                    _primaryEntityName = _primaryEntity.LogicalName;
+                }
+            }
+            catch (Exception ex) 
+            {
+                _tracing.Trace($"[TokenProcessor.ctor] Failed to retrieve primary entity {context.PrimaryEntityName}: {ex}");
+                throw new InvalidPluginExecutionException("We couldn’t load the record details needed to generate the template. Please try again or contact your system administrator.");
+            }        
+        }
+        public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity, Dictionary<string, string> nestedDictionary)
+        {
             _service = service;
             _context = context;
             _tracing = tracing;
             _entity = entity;
+            _nestedDictionary = nestedDictionary;
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Dictionary<string,Entity> entityDictionary, Dictionary<string,string> sectionDictionary)
         {
@@ -40,173 +64,217 @@ namespace TemplateBuilder.Utilities
             _sectionDictionary = sectionDictionary;
             _tdbOrQuery = true;
         }
-        public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context)
-        {
-            _service = service;
-            _context = context;
-            _tracing = tracing;
-            _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
-            _primaryEntityName = _primaryEntity.LogicalName;
-            _tdbOrQuery = true;
-        }
+        
         /// <summary>              
         /// _entity = _primaryEntity;
         /// Replaces curly brace values with the attribute values from the entity results
         /// </summary>
         /// <param name="fetchXML"></param>
         /// <returns></returns>
+        
+        
         public string ReplaceTokens(string text)
         {
-            _tracing.Trace("Start of Replace Token Functions");
-
-            // Accept format strings in the format
-            // {{attributeLogicalName}} or {{attribtueLogicalName:formatstring}} or {{queryName-repeatingGroupname}} or {{queryName-attributeLogicalName}}
-            // Where formatstring is a standard String.format format string e.g. {{course.date:dd MMM yyyy}}
-            var result = Regex.Replace(text, _pattern, (match) =>
+            try
             {
-                _tracing.Trace("Inside var result");
-                //_tracing.Trace("Text: "+text);
-                var fulltoken = match.Groups[1].Value;
-                var attributeName = string.Empty;
-                var queryName = string.Empty;
-                if(_tdbOrQuery)
+                var result = Regex.Replace(text, _pattern, match =>
                 {
-                    if (_entityDictionary != null)
+                    string fullToken = match.Groups[1].Value;
+
+                    string format = match.Groups[2].Value;
+
+                    string attributeName = ResolveEntityAndAttribute(fullToken);
+
+                    if (_entity != null)
                     {
-                        _tracing.Trace("Replacing for TBD structure: "+ fulltoken);
-                        var parts = fulltoken.Split('-');
-                        _tracing.Trace("Parts: "+ parts);
-                        if (parts.Length > 1)
-                        {
-                            _tracing.Trace("Parts received");
-                            queryName = parts[0];
-                            _tracing.Trace("Query: "+ queryName);
-                            if (_entityDictionary.ContainsKey(queryName))
-                            {
-                                _tracing.Trace("Entity from querydictionary received");
-                                _entity = _entityDictionary[queryName];
-                                _tracing.Trace("Entity: "+_entity.Id);
-                            }
-                            else
-                            {
-                                _tracing.Trace("Entity not present in the Query");
-                            }
-                            attributeName = parts[1];
-                        }                        
+                        return FormatEntityValue(attributeName, format);
                     }
-                    else
-                    {
-                        _tracing.Trace("Replacing for Query");
-                        var parts = fulltoken.Split('.');
-                        if (parts.Length > 1)
-                        {
-                            Entity er = GetEntityReferenceRecord(parts[0]);
-                            if (er != null)
-                            {
-                                _entity = er;
-                            }
-                            attributeName = parts[1];
-                        }
-                        else
-                        {
-                            _entity = _primaryEntity;
-                            attributeName = match.Groups[1].Value.Trim();
-                        }
-                    }
+                    return ResolveSectionValue(attributeName);
+                });
+
+                return ReplaceFormatLogic(result);
+            }
+            catch(Exception ex) 
+            {
+                _tracing.Trace($"[ReplaceTokens] Failed to replace tokens in text: {text}. Error: {ex}");
+                throw new InvalidPluginExecutionException("We couldn't process some placeholders in the template. Please check the template setup and try again. If issue persists, contact your system administrator.");
+            }
+        }
+
+        private string  ResolveEntityAndAttribute(string fullToken)
+        {
+            string attributeName = string.Empty;
+
+            if (_tdbOrQuery)
+            {
+                if (_entityDictionary != null)
+                {
+
+                    (_entity, attributeName) = ResolveFromEntityDictionary(fullToken);
+
                 }
                 else
                 {
-                    _tracing.Trace("Replacing for normal attribute in subsection");
-                    attributeName = match.Groups[1].Value.Trim();
-                }
-                // Try get the query
-                var format = match.Groups[2].Value;
-                _tracing.Trace("Format: "+format);
-                _tracing.Trace("Token: " + attributeName);
-
-                // Check if there is an attribute value
-                if (_entity != null)
-                {
-                    if (_entity.Contains(attributeName))
+                    if (_entity != null)
                     {
-                        _tracing.Trace("Getting valuetype of token");
-
-                        var value = _entity[attributeName];
-                        var type = value.GetType().Name;
-                        // If aliased value, get the real value
-                        if (type == "AliasedValue")
-                        {
-                            value = (value as AliasedValue).Value;
-                            type = value.GetType().Name;
-                        }
-
-                        switch (type)
-                        {
-                            case "Decimal":
-                            case "Integer":
-                            case "DateTime":
-                                // No need to change the value
-                                break;
-                            case "EntityReference":
-                                value = (value as EntityReference).Id;
-                                break;
-                            case "Guid":
-                                value = (Guid)value;
-                                break;
-                            default:
-                                value = value.ToString();
-                                break;
-                        }
-
-
-                        // Use String.Format to get the additional formatting options - e.g. dates and numeric formatting
-                        _tracing.Trace("Replacing the token value: " + value);
-                        if (!string.IsNullOrEmpty(format))
-                        {
-                            // 'format' is match.Groups[2].Value, which contains the colon and format specifier (e.g., ": dd/MMM/yyyy")
-                            // Construct the standard .NET format string: "{0: dd/MMM/yyyy}"
-                            string formatPattern = "{0" + format + "}";                        
-                            var formattedResult = string.Format(formatPattern, value);
-                            return formattedResult;
-                        }
-                        string replacementValue = value?.ToString() ?? "";
-                        return replacementValue;
+                        _tracing.Trace("Replacing nested query");
+                        attributeName = fullToken.Trim();
+                        return attributeName;
                     }
+                    (_entity, attributeName) = ResolveFromQuery(fullToken);
+
+                }
+            }
+            else
+            {
+                _tracing.Trace("not tdbOrQuery"+ fullToken.Trim());
+
+                attributeName = fullToken.Trim();
+            }
+            return attributeName;
+        }
+        private (Entity entity, string attributeName) ResolveFromEntityDictionary(string token)
+        {
+
+            var parts = token.Split('-');
+            if (parts.Length > 1)
+            {
+                string queryName = parts[0];
+
+                string attributeName = parts[1];
+
+                if (_entityDictionary.ContainsKey(queryName))
+                {
+                    _tracing.Trace($"Entity found in dictionary for {queryName}");
+                    return (_entityDictionary[queryName], attributeName);
                 }
 
-                if(_sectionDictionary.ContainsKey(attributeName.Trim()))
+                return (null, attributeName);
+            }
+            return (null, token);
+        }
+        private (Entity entity, string attributeName) ResolveFromQuery(string token)
+        {
+
+            
+            var parts = token.Split('.');
+
+            if (parts.Length > 1)
+            {
+
+                Entity er = GetEntityReferenceRecord(parts[0]);
+                if (er != null)
                 {
-                    _tracing.Trace("Getting the subsection from the Queryname");
+                    _entity = er;
+                }
+                return (_entity, parts[1]);
+            }
+
+            // If just attribute name, default to primary entity
+            return (_primaryEntity, token.Trim());
+        }
+        private string FormatEntityValue(string attributeName, string format)
+        {
+            try
+            {
+                if (!_entity.Contains(attributeName))
+                {
+                    return ResolveSectionValue(attributeName);
+                }
+
+                var value = _entity[attributeName];
+                var type = value.GetType().Name;
+                // If aliased value, get the real value
+                if (type == "AliasedValue")
+                {
+                    value = (value as AliasedValue).Value;
+                    type = value.GetType().Name;
+                }
+                _tracing.Trace("Type: " + type);
+                switch (type)
+                {
+                    case "Decimal":
+                    case "Integer":
+                    case "DateTime":
+                        // No need to change the value
+                        break;
+                    case "EntityReference":
+                        value = (value as EntityReference).Id;
+                        break;
+                    case "Guid":
+                        value = (Guid)value;
+                        break;
+                    case "Money":
+                        value = ((Money)value).Value;
+                        break;
+                    default:
+                        value = value.ToString();
+                        break;
+                }
+
+                _tracing.Trace("Type: " + type);
+
+                // Apply formatting
+                if (!string.IsNullOrEmpty(format))
+                {
+                    string formatPattern = "{0" + format + "}";
+                    return string.Format(formatPattern, value);
+                }
+
+                return value?.ToString() ?? "";
+            }
+            catch (Exception ex)
+            {
+                _tracing.Trace($"[FormatEntityValue] An error occured while formatting attribute: {attributeName} with the format: {format}. Exception: {ex}");
+                throw new InvalidPluginExecutionException("There was an error while formatting the column type of the data retrieved. Please contact your system administrator.");
+            }
+
+        }
+        private string ResolveSectionValue(string attributeName)
+        {
+            if (_sectionDictionary != null&&_sectionDictionary.Count > 0)
+            {
+                if (_sectionDictionary.ContainsKey(attributeName.Trim()))
+                {
                     return _sectionDictionary[attributeName];
                 }
-                else
+            }
+            if(_nestedDictionary != null&&_nestedDictionary.Count > 0)
+            {
+                if (_nestedDictionary.ContainsKey(attributeName.Trim()))
                 {
-                    _tracing.Trace("SectionDictionary doesn't contain a key with attribute name: " + attributeName);
+                    return _nestedDictionary[attributeName];
                 }
-                return "";
-            });
-            return ReplaceFormatLogic(result);
+            }
+            return "";
+
         }
+
         public string ReplaceFormatLogic(string result)
         {
             // Add additional template logic 
-            // {{delimeter:, }} - Will only add the string ", " if there is a value before and after
-            // {{suffix: Days}} - Will only add the string " Days" if there is a value before
-            string pattern = @"\[\[(delimeter|suffix|blankif|usefirst):([\w\W]*?)\]\]";
-
+            // [[delimeter:, ]] - Will only add the string ", " if there is a value before and after
+            // [[suffix: Days]] - Will only add the string " Days" if there is a value before
+            string pattern = @"\[\[(delimeter|suffix|prefix|blankif|usefirst):([\w\W]*?)\]\]";
+            _tracing.Trace("Starting Replace Format Logic");
             Match match = Regex.Match(result, pattern);
             while (match.Success)
             {
                 int index = match.Index;
                 int endIndex = match.Index + match.Length;
-                var before = index > 0 ? result.Substring(0, index) : null;
-                var after = endIndex < result.Length ? result.Substring(endIndex) : null;
+                
+                var beforeTextOnly = GetImmediateTextBefore(result,index);
+
+                var  afterTextOnly = GetImmediateTextAfter(result, endIndex);
+                
                 var replaceWith = "";
+                _tracing.Trace("Before: " );
+                _tracing.Trace("After: " + afterTextOnly);
                 switch (match.Groups[1].Value)
                 {
                     case "delimeter":
                         // If the preceding or following text is blank then don't output the delimiter
-                        if (before != null && !before.EndsWith("}}") && after != null && !after.StartsWith("{{"))
+                        if (!string.IsNullOrEmpty(beforeTextOnly)&&!beforeTextOnly.EndsWith("}}") && !string.IsNullOrEmpty(afterTextOnly) && !afterTextOnly.StartsWith("{{"))
                         {
                             replaceWith = match.Groups[2].Value;
                         }
@@ -214,8 +282,17 @@ namespace TemplateBuilder.Utilities
                         break;
                     case "suffix":
                         // If the preceding text is blank, then don't output the suffix
-                        if (before != null && !before.EndsWith("}}"))
+                        if (!string.IsNullOrEmpty(beforeTextOnly) && !beforeTextOnly.EndsWith("}}"))
                         {
+                            replaceWith = match.Groups[2].Value;
+                        }
+                        result = result.Substring(0, index) + replaceWith + result.Substring(endIndex);
+                        break;
+                    case "prefix":
+                        if(!string.IsNullOrEmpty(afterTextOnly) && !afterTextOnly.StartsWith("{{"))
+                        {
+                            _tracing.Trace("After: " + afterTextOnly);
+                            _tracing.Trace("Replace with the prefix value ");
                             replaceWith = match.Groups[2].Value;
                         }
                         result = result.Substring(0, index) + replaceWith + result.Substring(endIndex);
@@ -227,18 +304,18 @@ namespace TemplateBuilder.Utilities
                         result = result.Substring(0, index) + result.Substring(endIndex);
                         foreach (string value in valuesToBlank)
                         {
-                            if (after.StartsWith(value))
+                            if (afterTextOnly.StartsWith(value))
                             {
-                                result = after.Replace(value, "");
+                                result = afterTextOnly.Replace(value, "");
                             }
                         }
 
                         break;
                     case "usefirst":
-                        if (after.IndexOf('|') == 0)
-                            result = after.Substring(after.IndexOf('|') + 1);
+                        if (afterTextOnly.IndexOf('|') == 0)
+                            result = afterTextOnly.Substring(afterTextOnly.IndexOf('|') + 1);
                         else
-                            result = after.Substring(0, after.IndexOf('|'));
+                            result = afterTextOnly.Substring(0, afterTextOnly.IndexOf('|'));
                         break;
                 }
                 match = Regex.Match(result, pattern);
@@ -246,6 +323,47 @@ namespace TemplateBuilder.Utilities
 
             return result;
         }
+        private string GetImmediateTextBefore(string input, int startIndex)
+        {
+            if (startIndex <= 0) return "";
+
+            // Look backwards for the *last opening tag* of a container
+            var snippetBefore = input.Substring(0, startIndex);
+
+            // Find the last opening tag <td>, <div>, <p>, etc.
+            var lastTagMatch = Regex.Match(snippetBefore, @"<(td|div|p)[^>]*>$",
+                RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+
+            int searchStart = lastTagMatch.Success
+                ? lastTagMatch.Index + lastTagMatch.Length // start right after the tag
+                : 0;
+
+            string snippet = snippetBefore.Substring(searchStart);
+
+            // Remove tags & whitespace
+            string clean = Regex.Replace(snippet, "<.*?>", "").Replace("&nbsp;", "").Trim();
+
+            return clean;
+        }
+
+        private string GetImmediateTextAfter(string input, int startIndex)
+        {
+            if (startIndex >= input.Length) return "";
+
+            // Find the closing tag of the container (<td>, <div>, <p>, etc.)
+            var nextTagMatch = Regex.Match(input.Substring(startIndex), @"</(td|div|p)[^>]*>", RegexOptions.IgnoreCase);
+            int searchEnd = nextTagMatch.Success
+                ? startIndex + nextTagMatch.Index   // limit to before the closing tag
+                : input.Length;
+
+            string snippet = input.Substring(startIndex, searchEnd - startIndex);
+
+            // Remove tags & whitespace
+            string clean = Regex.Replace(snippet, "<.*?>", "").Replace("&nbsp;", "").Trim();
+
+            return clean;
+        }
+
         public virtual Entity GetEntityReferenceRecord(string entityName)
         {
             RetrieveEntityRequest retrieveEntityRequest = new RetrieveEntityRequest
@@ -255,7 +373,6 @@ namespace TemplateBuilder.Utilities
             };
             RetrieveEntityResponse retrieveEntityResponse = (RetrieveEntityResponse)_service.Execute(retrieveEntityRequest);
             EntityMetadata primaryEntityMetadata = retrieveEntityResponse.EntityMetadata;
-            _tracing.Trace("Getting primaryEntity Metadata");
             //Identify lookup attributes that point to the desired referenced entity
             var lookupAttributes = primaryEntityMetadata.Attributes
                 .Where(attr => attr.AttributeType == AttributeTypeCode.Lookup || attr.AttributeType == AttributeTypeCode.Customer || attr.AttributeType == AttributeTypeCode.Owner)
@@ -264,7 +381,6 @@ namespace TemplateBuilder.Utilities
                 .ToList();
             ColumnSet columnSet = new ColumnSet(lookupAttributes.Select(attr => attr.LogicalName).ToArray());
             Entity primaryEntityRecord = _service.Retrieve(_primaryEntityName, _primaryEntity.Id, columnSet);
-            _tracing.Trace("LookupAttributes Retrieved");
             //Iterate through the retrieved attributes to find the EntityReference
             foreach (var attributeName in columnSet.Columns)
             {
@@ -272,12 +388,10 @@ namespace TemplateBuilder.Utilities
                 {
                     if (entityReference.LogicalName.Equals(entityName, StringComparison.OrdinalIgnoreCase))
                     {
-                        _tracing.Trace("Getting the Entity Reference record.");
                         return _service.Retrieve(entityName, entityReference.Id, new ColumnSet(true));
                     }
                 }
             }
-            _tracing.Trace("Entity Reference Record not there");
             return null;
         }
     }

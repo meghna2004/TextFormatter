@@ -1,0 +1,2 @@
+15:58:42	
+15:58:42	Exiting program with exception: Connection to Dataverse is not established. Aborting process.

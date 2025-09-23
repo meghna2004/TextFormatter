@@ -32,24 +32,18 @@ namespace TemplateBuilder.PlugIns
             tracingService.Trace("Stage: " + stage);
             var mode = context.Mode.ToString();
             tracingService.Trace("Mode: " + mode);
-            tracingService.Trace("Getting Configuration Settings");
             vig_templateconfigurationsetting configSetting =  templateRepo.GetTemplateConfig(messageName, entityName, mode, stage);
 
             if (configSetting!=null)
             {
                 tracingService.Trace("Retrieve templates from configId: " + configSetting.Id.ToString());
-
                 EntityCollection templatesToProcess = templateRepo.GetTemplates(configSetting.Id);
-                tracingService.Trace("Templates Retrieved");
-
                 foreach ( var template in templatesToProcess.Entities)
                 {
-                    tracingService.Trace("Inside For each to process Templates");
                     vig_customtemplate customTemplate = template.ToEntity<vig_customtemplate>();
                     contentGenService = new ContentGeneratorService(service, context, tracingService, templateRepo, customTemplate.vig_textdescriptionbodyid.Id);
                     vig_textdescriptionbody tbd = service.Retrieve("vig_textdescriptionbody", customTemplate.vig_textdescriptionbodyid.Id, columnSet:new ColumnSet(true)).ToEntity<vig_textdescriptionbody>();
                     string content = contentGenService.BuildContent();
-                    tracingService.Trace("Enum value is: ");
                     var tempType = (TemplateType)customTemplate.vig_outputtype.Value;
                     tracingService.Trace("Enum value is: " + tempType.ToString());
                     string subject = customTemplate.vig_subject;

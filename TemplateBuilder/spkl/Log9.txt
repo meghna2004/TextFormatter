@@ -11,3 +11,4 @@
 17:50:53		Begin Reading Metadata from Server
 17:50:58	======================================================================================================================
 17:50:58	
+15:59:33	Exiting program with exception: Parameter count mismatch.

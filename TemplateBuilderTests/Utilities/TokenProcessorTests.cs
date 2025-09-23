@@ -126,8 +126,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
-            var contextMock = new Mock<IPluginExecutionContext>();          
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
+            var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object,entity);
             string template = "Alice[[delimeter:,]]John";
@@ -143,8 +149,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "Alice[[delimeter:,]]";
@@ -160,8 +172,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "[[delimeter:,]]John";
@@ -177,8 +195,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "50 [[suffix:Days]]";
@@ -194,8 +218,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "[[suffix:Days]]";
@@ -211,8 +241,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "[[blankif:Test]]Test";
@@ -228,8 +264,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "[[blankif:Test]]NotTest";
@@ -245,8 +287,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "[[usefirst:1]]FirstValue|SecondValue";
@@ -263,8 +311,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "[[usefirst:2]]FirstValue|";
@@ -280,8 +334,14 @@ namespace TemplateBuilder.Utilities.Tests
         {
             //Arrange
             Entity entity = new Entity();
+            var accountId = Guid.NewGuid();
+            var accountEntity = new Entity("account") { Id = accountId };
             var serviceMock = new Mock<IOrganizationService>();
+            serviceMock.Setup(s => s.Retrieve("account", accountId, It.IsAny<ColumnSet>()))
+          .Returns(accountEntity);
             var contextMock = new Mock<IPluginExecutionContext>();
+            contextMock.Setup(c => c.PrimaryEntityId).Returns(accountId);
+            contextMock.Setup(c => c.PrimaryEntityName).Returns("account");
             var tracingMock = new Mock<ITracingService>();
             var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, entity);
             string template = "[[usefirst:1]]|SecondValue";
@@ -337,7 +397,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("contact", contactId, It.IsAny<ColumnSet>()))
            .Returns(contactEntity);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object,null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -381,7 +441,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Execute(It.IsAny<RetrieveEntityRequest>()))
                        .Returns(retrieveEntityResponse);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object,null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -434,7 +494,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("contact", contactId, It.IsAny<ColumnSet>()))
            .Returns(contactEntity);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -487,7 +547,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("Contact", contactId, It.IsAny<ColumnSet>()))
            .Returns(contactEntity);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, null);
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
@@ -557,7 +617,7 @@ namespace TemplateBuilder.Utilities.Tests
             serviceMock.Setup(s => s.Retrieve("contact", contactId1, It.IsAny<ColumnSet>()))
            .Returns(contactEntity1);
 
-            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object);
+            var replacer = new TokenProcessor(tracingMock.Object, serviceMock.Object, contextMock.Object, null );
 
             // Act
             var result = replacer.GetEntityReferenceRecord("contact");
