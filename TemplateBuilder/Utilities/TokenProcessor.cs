@@ -33,7 +33,10 @@ namespace TemplateBuilder.Utilities
             _tracing = tracing;
             _entity = entity;
             _primaryEntity = service.Retrieve(context.PrimaryEntityName, context.PrimaryEntityId, new ColumnSet(true));
-            _primaryEntityName = _primaryEntity.LogicalName;
+            if(_primaryEntity != null)
+            {
+                _primaryEntityName = _primaryEntity.LogicalName;
+            }
             _tdbOrQuery = true;
         }
         public TokenProcessor(ITracingService tracing, IOrganizationService service, IPluginExecutionContext context, Entity entity, Dictionary<string, string> nestedDictionary)
