@@ -22,7 +22,7 @@ namespace TemplateBuilder.Services
         {
             _service = service ?? throw new InvalidPluginExecutionException("We couldn’t connect to Dynamics 365. Please try again later or contact your system administrator.");
             _context = context ?? throw new InvalidPluginExecutionException("We couldn’t process your request because the context information is missing. Please try again later or contact your system administrator.");
-            _tracing = tracingService?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
+            _tracing = tracingService ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
             _templateRepo = templateRepo ?? throw new InvalidPluginExecutionException("We couldn’t load the email template. Please try again later or contact your system administrator.");
             try
             {

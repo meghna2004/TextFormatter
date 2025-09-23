@@ -19,10 +19,10 @@ namespace TemplateBuilder.Repositories
         private readonly PluginConfigService _pluginConfigService;
         public TemplateRepository(IOrganizationService service, IPluginExecutionContext context, ITracingService tracing, PluginConfigService pluginService)
         {
-            _service = service;
-            _context = context;
-            _tracing = tracing;
-            _pluginConfigService = pluginService;
+            _service = service ?? throw new InvalidPluginExecutionException("We couldn’t connect to Dynamics 365. Please try again later or contact your system administrator.");
+            _context = context ?? throw new InvalidPluginExecutionException("We couldn’t process your request because the context information is missing. Please try again later or contact your system administrator.");
+            _tracing = tracing ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
+            _pluginConfigService = pluginService ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
         }
         public vig_templateconfigurationsetting GetTemplateConfig(string messageName, string triggerEntity, string executionMode, string stage)
         {
@@ -81,7 +81,6 @@ namespace TemplateBuilder.Repositories
         }
         public virtual TextDescriptionBodies CreateTemplateModel(Guid templateDesId)
         {
-            //Change Query to retrive only active records.
             _tracing.Trace("Create Template Model Query: " + templateDesId.ToString());
             string retrieveTemplateSections = string.Format(@"<fetch>
                                                                 <entity name='vig_query'>
@@ -121,7 +120,6 @@ namespace TemplateBuilder.Repositories
                                                                 </entity>
                                                               </fetch>", templateDesId.ToString());
             EntityCollection sectionsEntity = _service.RetrieveMultiple(new FetchExpression(retrieveTemplateSections));
-            //_tracing.Trace("Query Ran");
 
             var descriptionBody = new TextDescriptionBodies
             {
@@ -129,7 +127,6 @@ namespace TemplateBuilder.Repositories
             };
             foreach (Entity entity in sectionsEntity.Entities)
             {
-                //_tracing.Trace("Initilise Variables with Values retrieved");
                 var fetchSequence = 0;
                 var fetchQuery = string.Empty;
                 var queryName = string.Empty;
@@ -143,12 +140,10 @@ namespace TemplateBuilder.Repositories
                 if (entity.Contains("vig_fetchsequence"))
                 {
                     fetchSequence = entity.GetAttributeValue<int>("vig_fetchsequence");
-                    //_tracing.Trace("Variable 1 " + fetchSequence);
                 }
                 if (entity.Contains("vig_fetchquery"))
                 {
                     fetchQuery = entity.GetAttributeValue<string>("vig_fetchquery");
-                    //crete data model here.
                 }
                 if (entity.Contains("vig_name"))
                 {
@@ -157,7 +152,6 @@ namespace TemplateBuilder.Repositories
                 if (entity.Contains("RG.vig_name"))
                 {
                     rgName = entity.GetAttributeValue<AliasedValue>("RG.vig_name").Value.ToString();
-                   // _tracing.Trace("Variable 9 " + rgName);
                 }
                 if (entity.Contains("TBD.vig_textformat"))
                 {
@@ -170,29 +164,20 @@ namespace TemplateBuilder.Repositories
                 }
                 if (entity.Contains("NRG.vig_format"))
                 {
-                    //_tracing.Trace("NRG Format");
-
                     nrgFormat = entity.GetAttributeValue<AliasedValue>("NRG.vig_format").Value.ToString();
                 }
                 if (entity.Contains("NRG.vig_name"))
                 {
-                    //_tracing.Trace("NRG Name");
-
                     nrgName = entity.GetAttributeValue<AliasedValue>("NRG.vig_name").Value.ToString();
                 }
                 if (entity.Contains("nQuery.vig_name"))
                 {
-                    //_tracing.Trace("Nested Query Name");
-
                     nQueryName = entity.GetAttributeValue<AliasedValue>("nQuery.vig_name").Value.ToString();
                 }
                 if (entity.Contains("nQuery.vig_fetchquery"))
                 {
-                    //_tracing.Trace("Nested Query text");
-
                     nFetchQuery = entity.GetAttributeValue<AliasedValue>("nQuery.vig_fetchquery").Value.ToString();
                 }
-                _tracing.Trace("All Variables Initialised");
                 var query = descriptionBody.queries.FirstOrDefault(q => q.sequence == fetchSequence);
                 if (query == null)
                 {
