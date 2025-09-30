@@ -66,8 +66,11 @@ namespace TemplateBuilder.Repositories
                     new ConditionExpression("vig_templateconfigurationsettingid", ConditionOperator.Equal, configID),
                     new ConditionExpression("statuscode",ConditionOperator.Equal,949800000)
                 }
-            }
+
+            }             
             };
+            OrderExpression sequence = new OrderExpression("vig_sequence", OrderType.Ascending);
+            getTemplate.Orders.Add(sequence);
             EntityCollection templatesRetrieved = _service.RetrieveMultiple(getTemplate);
             if (templatesRetrieved.Entities.Count > 0)
             {
