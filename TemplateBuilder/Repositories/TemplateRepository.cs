@@ -197,7 +197,7 @@ namespace TemplateBuilder.Repositories
                     format = rgFormat,
                     nestedRepeatingGroups = new List<RepeatingGroups>(),
                 };
-                if(nrgFormat!=string.Empty&&nrgFormat!=string.Empty)
+                if(nrgFormat!=string.Empty&&nrgName!=string.Empty)
                 {
                     var nestedRepeatingGroup = new RepeatingGroups
                     {

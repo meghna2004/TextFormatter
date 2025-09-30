@@ -61,19 +61,31 @@ namespace TemplateBuilder.PlugIns
                 string stage = configRecord.vig_processstage.Value.ToString();
                
                 localcontext.Trace("All config values retrieved");
-                Guid existingStepId = pluginConfigService.FindExistingPluginStep(messageName, primaryEntity);
+                Guid existingStepId = pluginConfigService.FindExistingPluginStep(messageName, primaryEntity,filterAttributes);
                 if (existingStepId!=Guid.Empty)
                 {
                     localcontext.Trace("Plugin step already exists. No action taken.");
                     configTargetRecord.vig_sdkmessageprocessingstepid = new EntityReference("sdkmessageprocessingstep", existingStepId);
+                    configTargetRecord.vig_name = $"{messageName} of {primaryEntity} on {filterAttributes} Step";
+
                     return;
                 }
 
                 // Fully Qualified Name (FQN) of the plugin class containing the business logic
+               // Entity sdkMessage = service.Retrieve("sdkmessageprocessingstep", configTargetRecord.vig_sdkmessageprocessingstepid.Id, columnSet: new ColumnSet(true));
                 Guid sdkMessageProcessingStepID = pluginConfigService.CreatePluginStep(primaryEntity, messageName,stage, executionMode,filterAttributes);
+                localcontext.Trace("Checking sdk message processing step ER on target.");
 
+                if (configRecord.Contains("vig_sdkmessageprocessingstepid"))
+                {
+                    if (configRecord.vig_sdkmessageprocessingstepid.Id != Guid.Empty)
+                    {
+                        service.Delete("sdkmessageprocessingstep", configRecord.vig_sdkmessageprocessingstepid.Id);
+                    }
+                }
+                localcontext.Trace("Set entity reference to the target record: "+sdkMessageProcessingStepID.ToString());
                 configTargetRecord.vig_sdkmessageprocessingstepid = new EntityReference("sdkmessageprocessingstep", sdkMessageProcessingStepID);
-                configTargetRecord.vig_name = $"{messageName} of {primaryEntity} Step"; 
+                configTargetRecord.vig_name = $"{messageName} of {primaryEntity} on {filterAttributes} Step"; 
                 localcontext.Trace("Plugin step successfully registered.");
             }
             catch (Exception ex)
