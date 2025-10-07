@@ -46,6 +46,11 @@ namespace TemplateBuilder.Services
                 }
             };
             var result = _service.RetrieveMultiple(queryExpression);
+            if (result.Entities.Count > 0)
+            {
+                result[0]["statecode"] = new OptionSetValue(0);
+                result[0]["statuscode"] = new OptionSetValue(1);
+            }
             return result.Entities.Count > 0 ? result.Entities[0].Id: Guid.Empty;
         }
         public Guid CreatePluginStep(string primaryEntity, string messageName, string stage, string executionMode, string filterAttributes)

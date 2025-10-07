@@ -41,13 +41,25 @@ namespace TemplateBuilder.PlugIns
                 // Retrieve the updated record details
                 localcontext.Trace("Getting configRecord");
                 vig_templateconfigurationsetting configRecord = localcontext.MergedPreTarget.ToEntity<vig_templateconfigurationsetting>();
-                vig_templateconfigurationsetting configTargetRecord = ((Entity)localcontext.PluginExecutionContext.InputParameters["Target"]).ToEntity<vig_templateconfigurationsetting>();
-                if (configRecord.statuscode.Value != vig_templateconfigurationsetting_statuscode.On)
-                    return;
-
                 if (configRecord == null)
                     throw new InvalidPluginExecutionException("Configuration record not found in Post Image.");
+                vig_templateconfigurationsetting configTargetRecord = ((Entity)localcontext.PluginExecutionContext.InputParameters["Target"]).ToEntity<vig_templateconfigurationsetting>();
+                if (configRecord.statuscode.Value != vig_templateconfigurationsetting_statuscode.On)
+                {
+                    if (configRecord.Contains("vig_sdkmessageprocessingstepid"))
+                    {
+                        if (configRecord.vig_sdkmessageprocessingstepid.Id != Guid.Empty)
+                        {
+                            Entity step = new Entity("sdkmessageprocessingstep", configRecord.vig_sdkmessageprocessingstepid.Id);
+                            step["statecode"] = new OptionSetValue(1);
+                            step["statuscode"] = new OptionSetValue(2);
+                            service.Update(step);
 
+                        }
+                    }
+                    return;
+                }
+               
                 // Retrieve plugin configuration details
                 localcontext.Trace("Get trigger type");
                 string messageName = configRecord.vig_triggertype.Value.ToString();
