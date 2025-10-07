@@ -193,25 +193,70 @@ namespace TemplateBuilder.Utilities
                 _tracing.Trace("Type: " + type);
                 switch (type)
                 {
+                    // Numeric types
                     case "Decimal":
+                    case "Double":
                     case "Integer":
+                    case "BigInt":
                     case "DateTime":
-                        // No need to change the value
+                        // No need to change the value                      
                         break;
-                    case "EntityReference":
-                        value = (value as EntityReference).Id;
+
+                    case "Boolean":
+                        value = (bool)value;
                         break;
+
                     case "Guid":
                         value = (Guid)value;
                         break;
+
+                    case "String":
+                    case "Memo": // Multiline text
+                        value = value.ToString();
+                        break;
+
                     case "Money":
                         value = ((Money)value).Value;
                         break;
+
+                    case "EntityReference":
+                        value = ((EntityReference)value).Id;
+                        break;
+
+                    case "OptionSetValue":
+                        value = ((OptionSetValue)value).Value;
+                        break;
+
+                    case "OptionSetValueCollection":
+                        value = string.Join(",", ((OptionSetValueCollection)value).Select(v => v.Value));
+                        break;
+
+                    // Image / File types
+                    case "Byte[]":
+                    case "Image":
+                    case "File":
+                        value = Convert.ToBase64String((byte[])value);
+                        break;                  
+
+                    case "Entity":
+                        value = ((Entity)value).Id; // or serialize entity if needed
+                        break;
+
+                    // Unique identifier wrapped in KeyAttribute
+                    case "KeyAttributeCollection":
+                        value = string.Join(",", ((KeyAttributeCollection)value).Select(kvp => $"{kvp.Key}:{kvp.Value}"));
+                        break;
+                    case "AliasedValue":
+                        var aliasedValue = (AliasedValue)value;
+                        value = aliasedValue.Value;
+                        type = aliasedValue.Value.GetType().Name;
+                        goto default;// Reprocess using actual type
+                  
+                        // Default / catch-all
                     default:
-                        value = value.ToString();
+                        value = value?.ToString();
                         break;
                 }
-
                 _tracing.Trace("Type: " + type);
 
                 // Apply formatting
@@ -249,7 +294,6 @@ namespace TemplateBuilder.Utilities
             return "";
 
         }
-
         public string ReplaceFormatLogic(string result)
         {
             // Add additional template logic 
