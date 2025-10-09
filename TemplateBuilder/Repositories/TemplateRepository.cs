@@ -24,12 +24,9 @@ namespace TemplateBuilder.Repositories
             _tracing = tracing ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
             _pluginConfigService = pluginService ?? throw new InvalidPluginExecutionException("We couldn’t process your request due to a system error. Please try again later or contact your system administrator.");
         }
-        public vig_templateconfigurationsetting GetTemplateConfig(string messageName, string triggerEntity, string executionMode, string stage)
+        public vig_templateconfigurationsetting GetTemplateConfig(string messageName, string triggerEntity, string executionMode, string stage,Guid stepID)
         {
             vig_templateconfigurationsetting templateConfig = null;
-            // Get the plugin step id
-            (Guid, string) pluginStepId = _pluginConfigService.GetPluginStepId(messageName, triggerEntity, executionMode, stage);
-            _tracing.Trace("PluginStepID retrieved");
 
             QueryExpression getTemplateConfig = new QueryExpression("vig_templateconfigurationsetting")
             {
@@ -38,15 +35,15 @@ namespace TemplateBuilder.Repositories
             {
                 Conditions =
                 {
-                    new ConditionExpression("vig_sdkmessageprocessingstepid", ConditionOperator.Equal, pluginStepId.Item1),
-                    new ConditionExpression("vig_executionmode",ConditionOperator.Equal, executionMode),
-                    new ConditionExpression("vig_filterattributes",ConditionOperator.Equal, pluginStepId.Item2),
+                    new ConditionExpression("vig_sdkmessageprocessingstepid", ConditionOperator.Equal, stepID),
+                    new ConditionExpression("statuscode",ConditionOperator.Equal,1),
+                    new ConditionExpression("statecode",ConditionOperator.Equal,0)
                 }
             }
             };
             EntityCollection templateConfigsRetrieved = _service.RetrieveMultiple(getTemplateConfig);
             if (templateConfigsRetrieved.Entities.Count > 0)
-            {
+            {              
                 _tracing.Trace("Template Config Retrieved");
                 _tracing.Trace("---------------------------");
 

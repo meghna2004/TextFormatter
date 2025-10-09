@@ -23,7 +23,19 @@ namespace TemplateBuilder.PlugIns
             TemplateRepository templateRepo = new TemplateRepository(service,context,tracingService,pluginConfigService);
             OutputStrategyFactory outputStrategy = new OutputStrategyFactory(context,service);
             ContentGeneratorService contentGenService = null;
-
+          
+            var stepReference = context.OwningExtension;
+            var stepId=Guid.Empty;
+            if (stepReference != null)
+            {
+                 stepId = stepReference.Id;
+                var stepName = stepReference.Name; // optional
+                tracingService.Trace($"Triggered by step: {stepName} ({stepId})");
+            }
+            else
+            {
+                tracingService.Trace("OwningExtension is null — no step info available.");
+            }
             var messageName = context.MessageName;
             tracingService.Trace("Message Name: "+messageName);
             var entityName = context.PrimaryEntityName;
@@ -32,7 +44,8 @@ namespace TemplateBuilder.PlugIns
             tracingService.Trace("Stage: " + stage);
             var mode = context.Mode.ToString();
             tracingService.Trace("Mode: " + mode);
-            vig_templateconfigurationsetting configSetting =  templateRepo.GetTemplateConfig(messageName, entityName, mode, stage);
+            
+            vig_templateconfigurationsetting configSetting =  templateRepo.GetTemplateConfig(messageName, entityName, mode, stage,stepId);
 
             if (configSetting!=null)
             {
