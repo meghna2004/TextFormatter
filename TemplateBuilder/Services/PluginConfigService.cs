@@ -165,31 +165,5 @@ namespace TemplateBuilder.Services
             }
             return Guid.Empty;
         }
-        public EntityCollection GetPluginStepId(string messageName, string triggerEntity, string executionMode, string stage)
-        {
-            Guid pluginTypeId = GetPluginTypeId();
-            _context.Trace("Plugin Type Retrieved");
-
-            // Now try to query the SdkMessageProcessingStep entity
-            Guid sdkMessageFilterId = GetSdkMessageFilter(triggerEntity, GetSdkMessageId(messageName));
-
-            QueryExpression query = new QueryExpression("sdkmessageprocessingstep");
-            query.ColumnSet = new ColumnSet("sdkmessageprocessingstepid", "name","filteringattributes");
-            query.Criteria.AddCondition("plugintypeid", ConditionOperator.Equal, pluginTypeId);
-            query.Criteria.AddCondition("sdkmessageid", ConditionOperator.Equal, GetSdkMessageId(messageName));
-            query.Criteria.AddCondition("sdkmessagefilterid", ConditionOperator.Equal, sdkMessageFilterId);
-            query.Criteria.AddCondition("mode", ConditionOperator.Equal, executionMode);
-            query.Criteria.AddCondition("stage", ConditionOperator.Equal, stage);
-            EntityCollection steps = _service.RetrieveMultiple(query);
-
-            if (steps.Entities.Count > 0)
-            {
-                _context.Trace("Plugin Step retrieved");
-                var step = steps.Entities[0];
-                return steps;
-                //return (step.Id,step.GetAttributeValue<string>("filteringattributes"));
-            }
-            return steps;
-        }
     }
 }
