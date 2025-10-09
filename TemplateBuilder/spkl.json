@@ -47,7 +47,7 @@
             Create multiple entries for different profiles
             */
         "profile": "default,debug",
-        "solution": "EmailFormatter",
+        "solution": "VCompose",
         "assemblypath": "bin\\Debug\\TemplateBuilder.dll"
 
         /*
